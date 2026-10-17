@@ -1,0 +1,57 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = Omit<HTMLAttributes<'div'>, 'role' | 'aria-label'> & { name: string };
+const { name, class: className, ...attributes } = Astro.props;
+---
+
+<div
+  {...attributes}
+  data-theme="dark"
+  class:list={['project-placeholder', className]}
+  role="img"
+  aria-label={`${name}. Capturas próximamente.`}
+>
+  <div class="project-placeholder__copy">
+    <p class="project-placeholder__name">{name}</p>
+    <p class="project-placeholder__caption">Capturas próximamente</p>
+  </div>
+</div>
+
+<style>
+  .project-placeholder {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    aspect-ratio: 16 / 10;
+    padding: 2rem 1.25rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-card);
+    background: radial-gradient(ellipse at 50% 0%, rgb(2 132 199 / 0.16), transparent 70%), var(--canvas);
+    color: var(--fg);
+    text-align: center;
+  }
+
+  .project-placeholder::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image: linear-gradient(rgb(148 163 184 / 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(148 163 184 / 0.07) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse at center, #000, transparent 80%);
+  }
+
+  .project-placeholder__copy { display: grid; gap: 0.75rem; min-width: 0; }
+  .project-placeholder__name {
+    font-size: clamp(2rem, 1.5rem + 2vw, 3.5rem);
+    font-weight: 600;
+    line-height: 1.05;
+    letter-spacing: -0.04em;
+    overflow-wrap: anywhere;
+  }
+  .project-placeholder__caption { color: var(--fg-muted); font-family: var(--font-mono); font-size: 0.75rem; }
+</style>

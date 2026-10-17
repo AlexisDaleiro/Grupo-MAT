@@ -1,0 +1,66 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { Icon } from 'astro-icon/components';
+
+type Appearance = { variant?: 'primary' | 'secondary' | 'ghost'; arrow?: boolean };
+type Props = Appearance & (
+  | (HTMLAttributes<'a'> & { href: string })
+  | (HTMLAttributes<'button'> & { href?: never })
+);
+
+const { variant = 'primary', arrow = false, class: className, ...attributes } = Astro.props;
+const link = typeof attributes.href === 'string' ? attributes : undefined;
+const button = typeof attributes.href !== 'string' ? attributes : undefined;
+const classes = ['button', `button--${variant}`, className];
+const linkRel = link?.target === '_blank'
+  ? `${link.rel ?? ''} noopener`.trim()
+  : link?.rel;
+---
+
+{link ? (
+  <a {...link} rel={linkRel} class:list={classes}>
+    <slot />
+    {arrow && <Icon name="lucide:arrow-right" size={18} class="button__arrow" aria-hidden="true" />}
+  </a>
+) : (
+  <button {...button} type={button?.type ?? 'button'} class:list={classes}>
+    <slot />
+    {arrow && <Icon name="lucide:arrow-right" size={18} class="button__arrow" aria-hidden="true" />}
+  </button>
+)}
+
+<style>
+  .button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.625rem;
+    min-height: 44px;
+    padding: 0.625rem 1.5rem;
+    border: 1px solid transparent;
+    border-radius: var(--radius-pill);
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.4;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform 200ms var(--ease-out-expo);
+  }
+
+  .button--primary { background: var(--brand-strong); color: var(--on-brand); }
+  .button--primary:hover { background: var(--brand-strong-hover); }
+  .button--secondary { border-color: var(--line); background: transparent; color: var(--fg); }
+  .button--secondary:hover { border-color: var(--brand); }
+  .button--ghost { background: transparent; color: var(--fg); }
+  .button--ghost:hover { background: var(--surface-2); }
+  .button:active { transform: scale(0.98); }
+  .button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+  .button__arrow { flex-shrink: 0; transition: transform 200ms var(--ease-out-expo); }
+  .button:hover .button__arrow { transform: translateX(2px); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .button, .button__arrow { transition: none; }
+    .button:active, .button:hover .button__arrow { transform: none; }
+  }
+</style>

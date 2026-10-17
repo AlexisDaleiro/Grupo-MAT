@@ -1,0 +1,60 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = Omit<HTMLAttributes<'div'>, 'style'> & {
+  name: string;
+  photo?: ImageMetadata;
+  initials?: string;
+  size?: number;
+};
+const { name, photo, initials, size = 96, class: className, ...attributes } = Astro.props;
+const letters = initials ?? name.trim().split(/\s+/u).slice(0, 2).map((part) => part[0]).join('').toLocaleUpperCase('es-UY');
+---
+
+<div {...attributes} class:list={['avatar', className]} style={`--avatar-size: ${size}px`}>
+  {photo ? (
+    <Image src={photo} width={size} height={size} alt={`Foto de ${name}`} format="webp" loading="lazy" class="avatar__image" />
+  ) : (
+    <>
+      <div class="avatar__initials" role="img" aria-label={`Iniciales de ${name}`}>{letters}</div>
+      {import.meta.env.DEV && <span class="avatar__pending">Foto pendiente</span>}
+    </>
+  )}
+</div>
+
+<style>
+  .avatar { position: relative; width: var(--avatar-size); flex-shrink: 0; }
+  .avatar__image, .avatar__initials {
+    display: block;
+    width: var(--avatar-size);
+    height: var(--avatar-size);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-pill);
+    object-fit: cover;
+  }
+  .avatar__initials {
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg, var(--surface-2), var(--surface));
+    color: var(--fg);
+    font-size: calc(var(--avatar-size) * 0.32);
+    font-weight: 500;
+    line-height: 1;
+  }
+  .avatar__pending {
+    position: relative;
+    display: block;
+    width: max-content;
+    margin: 0.5rem auto 0;
+    padding: 0.125rem 0.375rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-pill);
+    background: var(--surface);
+    color: var(--fg-muted);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    line-height: 1.5;
+  }
+</style>

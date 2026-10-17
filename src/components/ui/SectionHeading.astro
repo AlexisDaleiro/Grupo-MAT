@@ -1,0 +1,23 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = HTMLAttributes<'div'> & {
+  id: string;
+  title: string;
+  eyebrow?: string;
+  lead?: string;
+  align?: 'left' | 'center';
+};
+const { id, title, eyebrow, lead, align = 'left', class: className, ...attributes } = Astro.props;
+---
+
+<div {...attributes} class:list={['section-heading', { 'section-heading--center': align === 'center' }, className]}>
+  {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+  <h2 id={id}>{title}</h2>
+  {lead && <p class="text-lead">{lead}</p>}
+</div>
+
+<style>
+  .section-heading { display: grid; gap: 1rem; max-width: 52rem; color: var(--fg); }
+  .section-heading--center { margin-inline: auto; text-align: center; justify-items: center; }
+</style>

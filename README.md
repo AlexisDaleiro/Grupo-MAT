@@ -4,7 +4,7 @@ Sitio de Grupo MAT, agencia de software B2B de Uruguay. Astro con generación es
 
 ## Estado
 
-Fase 0: setup. La ruta `/` renderiza un `BaseLayout` vacío. El sistema de diseño, las secciones, las colecciones, el formulario y la analítica se implementan en las fases siguientes, con aprobación entre fases.
+Fase 1: sistema de diseño. Están implementados los tokens, las fuentes autoalojadas, el tema y los componentes base. La ruta `/` conserva el `BaseLayout` vacío; la navegación y el contenido se incorporan a partir de las fases siguientes, con aprobación entre fases.
 
 ## Desarrollo local
 
@@ -25,6 +25,25 @@ El servidor de desarrollo usa `http://localhost:4321` por defecto. No necesitás
 | `npm run preview` | Probar el último build con `wrangler pages dev ./dist`. |
 
 Antes de cerrar cada fase, ejecutá `npx astro check` y `npm run build`.
+
+## Sistema de diseño
+
+`src/styles/global.css` define los tokens y la variante `dark:` de Tailwind v4. Los componentes usan `canvas`, `surface`, `surface-2`, `line`, `fg`, `fg-muted` y los tokens de marca. El texto pequeño en acento usa `brand-text`; `brand` queda para texto grande, bordes e íconos. El contenido de una banda oscura se envuelve con `data-theme="dark"` y las clases `bg-canvas text-fg`.
+
+Geist y Geist Mono se sirven desde sus archivos variables latin de Fontsource con `font-display: swap`. Solo se precarga el woff2 de Geist. El tema se resuelve en el `<head>` antes de pintar: primero la elección guardada y después la preferencia del sistema. `ThemeToggle` guarda la selección, sincroniza sus instancias y actualiza `theme-color`, `aria-label` y `aria-pressed`. Sin acceso a almacenamiento sigue funcionando; sin JavaScript el botón queda oculto.
+
+| Componente | Uso |
+| --- | --- |
+| `Button` | Variantes `primary`, `secondary` y `ghost`; `href` genera un enlace y su ausencia, un botón. `arrow` agrega la flecha. Acepta atributos del elemento nativo. |
+| `Badge` | Variantes `neutral` y `status`. La segunda incluye un punto con pulso de opacidad, desactivado con reduced motion. |
+| `Container` | Ancho máximo de 72rem y padding lateral adaptable; `as` permite `div`, `section` o `article`. |
+| `SectionHeading` | `id` para el h2, `title`, `eyebrow`, `lead` y `align` (`left` o `center`). |
+| `SpotlightCard` | Superficie, borde y sombra del tema. El grupo usa `data-spotlight-group`; la posición reactiva al cursor se incorpora en la Fase 2. |
+| `Logo` | Link al inicio; `context="nav"` (18px) o `context="footer"` (22px). |
+| `ProjectPlaceholder` | `name` del proyecto; visual oscuro con grid y “Capturas próximamente”. |
+| `Avatar` | `name`, `photo` (imagen local importada), `initials` opcionales y `size` (96px por defecto). Sin foto muestra iniciales y, solo en desarrollo, “Foto pendiente”. |
+
+Los componentes están en `src/components/ui/` y el toggle en `src/components/layout/`. No se cargan React, Motion, Lenis ni GSAP para esta fase. El favicon es un SVG con la letra dibujada como path.
 
 ### Compatibilidad con Cloudflare Pages
 
@@ -113,7 +132,6 @@ Referencia: [crear una regla de rate limiting en Cloudflare](https://developers.
 
 ## Pendientes de fases siguientes
 
-- Sistema de diseño, fuentes, tema y componentes (Fase 1).
 - Navegación, menú y movimiento (Fase 2).
 - Home (Fase 3) y contenido con páginas internas (Fase 4).
 - Formulario, API y eventos de analítica (Fase 5).

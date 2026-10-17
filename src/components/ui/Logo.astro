@@ -1,0 +1,28 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = Omit<HTMLAttributes<'a'>, 'href' | 'aria-label'> & { context?: 'nav' | 'footer' };
+const { context = 'nav', class: className, ...attributes } = Astro.props;
+---
+
+<a {...attributes} href="/" aria-label="Grupo MAT, inicio" class:list={['logo', `logo--${context}`, className]}>
+  <span>Grupo <strong>MAT</strong></span>
+</a>
+
+<style>
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    color: var(--fg);
+    font-family: var(--font-sans);
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .logo strong { font-weight: 700; }
+  .logo--footer { font-size: 22px; }
+</style>
