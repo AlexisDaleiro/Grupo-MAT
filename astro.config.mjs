@@ -6,6 +6,10 @@ import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 import partytown from '@astrojs/partytown';
 import icon from 'astro-icon';
+import { loadEnv } from 'vite';
+
+// Astro usa Vite; no agregamos paquetes. Solo cargamos variables públicas aquí.
+const publicEnvironment = loadEnv(process.env.NODE_ENV ?? 'development', process.cwd(), 'PUBLIC_');
 
 export default defineConfig({
   site: 'https://grupo-mat.pages.dev',
@@ -58,7 +62,7 @@ export default defineConfig({
     },
   },
 
-  integrations: [react(), sitemap(), partytown(), icon()],
+  integrations: [react(), sitemap(), ...(publicEnvironment.PUBLIC_GA_ID?.trim() ? [partytown()] : []), icon()],
 
   vite: {
     plugins: [tailwindcss()],

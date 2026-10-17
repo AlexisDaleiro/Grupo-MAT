@@ -4,7 +4,7 @@ Sitio de Grupo MAT, agencia de software B2B de Uruguay. Astro con generación es
 
 ## Estado
 
-Fase 1: sistema de diseño. Están implementados los tokens, las fuentes autoalojadas, el tema y los componentes base. La ruta `/` conserva el `BaseLayout` vacío; la navegación y el contenido se incorporan a partir de las fases siguientes, con aprobación entre fases.
+Fase 2: layout y núcleo de movimiento. Están implementados el sistema de diseño, SEO base, skip link, navegación, menú móvil, footer, WhatsApp y los módulos globales de scroll, reveals y spotlight. La ruta `/` conserva el contenido principal vacío dentro del layout; las secciones de la Home se incorporan en la Fase 3, con aprobación entre fases.
 
 ## Desarrollo local
 
@@ -43,7 +43,36 @@ Geist y Geist Mono se sirven desde sus archivos variables latin de Fontsource co
 | `ProjectPlaceholder` | `name` del proyecto; visual oscuro con grid y “Capturas próximamente”. |
 | `Avatar` | `name`, `photo` (imagen local importada), `initials` opcionales y `size` (96px por defecto). Sin foto muestra iniciales y, solo en desarrollo, “Foto pendiente”. |
 
-Los componentes están en `src/components/ui/` y el toggle en `src/components/layout/`. No se cargan React, Motion, Lenis ni GSAP para esta fase. El favicon es un SVG con la letra dibujada como path.
+Los componentes están en `src/components/ui/` y el toggle en `src/components/layout/`. Los componentes UI no requieren React. El favicon es un SVG con la letra dibujada como path.
+
+## Layout y movimiento
+
+`BaseLayout` acepta `title`, `description`, `image` y `hasHero`. Cuando la página comienza con una banda oscura, pasá `hasHero` y marcá la banda con `data-hero data-theme="dark"`; así el nav ya tiene el tema correcto antes de cargar los scripts. Sin hero, el contenido deja 64px para el nav fijo.
+
+La navegación usa los links de `src/data/site.ts`. El nav cambia a cristal después de 8px y observa el hero con un offset de 64px. Las bandas mantienen sus tokens oscuros aunque el resto de la página esté en claro. El footer muestra únicamente los canales y redes configurados; Calendly sin URL usa `/contacto` en el CTA del nav.
+
+`MobileMenu` es la única isla de esta fase, con `client:media="(max-width: 1023px)"`. React y Motion se descargan cuando se hidrata en mobile; desktop conserva HTML y scripts vanilla. Usa un diálogo nativo, focus trap, cierre con Escape o enlaces, restauración de foco y bloqueo de scroll hasta finalizar la salida. Sin JavaScript, queda disponible una navegación móvil con `details` nativo. Motion usa `LazyMotion`, `domAnimation`, componentes `m.*` desde `motion/react-m` y `reducedMotion="user"`, con tweens sin rebote.
+
+`src/scripts/motion.ts` se importa una vez desde el layout. Lenis se sincroniza con el ticker de GSAP y ScrollTrigger, con touch nativo. En Lenis 1.3.27, `scrollTo` ya descuenta `scroll-margin-top`; por eso `anchors` usa offset adicional cero y los destinos conservan los 80px del CSS. Los reveals limpian transform, opacity, filter y will-change al terminar. Si vence el failsafe de 3 segundos, la carga tardía del módulo no vuelve a ocultar contenido ya visible. Al activar reduced motion se destruye Lenis y todo queda visible; al desactivarlo se reinicia el scroll sin repetir reveals.
+
+| Marca de HTML | Uso en las próximas secciones |
+| --- | --- |
+| `data-hero` | Banda inicial que determina el tema del nav y la aparición de WhatsApp. |
+| `data-reveal` | Eyebrow, título, lead o tarjeta individual; nunca una sección completa. |
+| `data-spotlight-group` | Grupo de `SpotlightCard`; la posición del cursor actualiza todas las tarjetas en un rAF, con lecturas agrupadas antes de las escrituras. |
+| `data-final-cta` o `id="contacto"` | Oculta WhatsApp al entrar en la vista, al igual que el footer. |
+
+El botón de WhatsApp aparece al pasar el hero y se oculta con el menú, CTA final o footer visibles. No se renderiza si el número público está vacío. El spotlight se activa solo con mouse fino, hover y sin reduced motion. No hay ClientRouter ni listeners de navegación de View Transitions.
+
+`Seo` contiene los metadatos base y admite una imagen real opcional. Los metadatos por página, JSON-LD, imagen OG y analítica quedan para la Fase 6. Las animaciones específicas del hero, proceso y proyecto se incorporan con sus secciones en la Fase 3. Los enlaces a páginas internas se completan al implementar sus rutas en la Fase 4.
+
+Partytown se activa solo cuando existe `PUBLIC_GA_ID`, para evitar registrar un worker de analítica que todavía no se usa. La configuración consulta únicamente variables públicas con el `loadEnv` de Vite que ya incluye Astro, sin agregar dependencias. La inyección de GA4 sigue pendiente de la Fase 6.
+
+### Verificación de la Fase 2
+
+Pruebas locales en Chrome 155 sobre una fixture temporal: 360, 768, 1024 y 1440px en claro y oscuro; nav transparente/cristal y cambio de banda; anchors a 80px; reveals con limpieza; spotlight; visibilidad de WhatsApp; menú con teclado, Escape, foco, scroll propio y cambio a desktop. Se verificaron reduced motion (también durante un reveal), touch, JavaScript desactivado y el failsafe con el módulo global bloqueado.
+
+Sin GA y sin hidratar islas en desktop, el JS inicial medido fue de **55.395 bytes gzip**, incluyendo módulos descargados y scripts inline. React no se descargó en desktop. En un trace de scroll de Chrome a 1440×900, el intervalo P95 entre frames fue de **5,7ms**, sin tareas mayores a 50ms. El reporte y el trace quedan fuera del repo; la fixture se retira de la entrega. Estos valores corresponden al núcleo de movimiento y se vuelven a medir cuando se incorpore la Home y en la Fase 7.
 
 ### Compatibilidad con Cloudflare Pages
 
@@ -132,7 +161,6 @@ Referencia: [crear una regla de rate limiting en Cloudflare](https://developers.
 
 ## Pendientes de fases siguientes
 
-- Navegación, menú y movimiento (Fase 2).
 - Home (Fase 3) y contenido con páginas internas (Fase 4).
 - Formulario, API y eventos de analítica (Fase 5).
 - SEO, JSON-LD, `robots.txt`, headers, OG y GA4 condicional con Partytown (Fase 6).

@@ -1,0 +1,59 @@
+---
+import { Icon } from 'astro-icon/components';
+import Container from '@/components/ui/Container.astro';
+import Logo from '@/components/ui/Logo.astro';
+import { serviceLinks, companyLinks, contact, socialLinks } from '@/data/site';
+const year = new Intl.DateTimeFormat('es-UY', { year: 'numeric', timeZone: 'America/Montevideo' }).format(new Date());
+---
+
+<footer data-theme="dark" data-site-footer class="site-footer">
+  <Container>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <Logo context="footer" />
+        <p>Software a medida para empresas que venden a empresas.</p>
+        {socialLinks.length > 0 && (
+          <div class="footer-social">
+            {socialLinks.map((social) => (
+              <a href={social.href} target="_blank" rel="noopener" aria-label={`Grupo MAT en ${social.label}`}><Icon name={social.icon} size={20} aria-hidden="true" /></a>
+            ))}
+          </div>
+        )}
+      </div>
+      <nav aria-label="Servicios en el pie de página">
+        <p class="footer-heading">Servicios</p>
+        <ul>{serviceLinks.map((item) => <li><a href={item.href}>{item.label}</a></li>)}</ul>
+      </nav>
+      <nav aria-label="Empresa en el pie de página">
+        <p class="footer-heading">Empresa</p>
+        <ul>{companyLinks.map((item) => <li><a href={item.href}>{item.label}</a></li>)}</ul>
+      </nav>
+      {(contact.whatsappUrl || contact.calendlyUrl) && <nav aria-label="Contacto en el pie de página">
+        <p class="footer-heading">Contacto</p>
+        <ul>
+          {contact.whatsappUrl && <li><a href={contact.whatsappUrl} target="_blank" rel="noopener" data-track="whatsapp">WhatsApp {contact.whatsappLabel}</a></li>}
+          {contact.calendlyUrl && <li><a href={contact.calendlyUrl} target="_blank" rel="noopener" data-track="calendly">Agendar una llamada</a></li>}
+        </ul>
+      </nav>}
+    </div>
+    <div class="footer-bottom">
+      <p>© {year} Grupo MAT · Hecho en Uruguay</p>
+      <a href="/privacidad">Política de privacidad</a>
+    </div>
+  </Container>
+</footer>
+
+<style>
+  .site-footer { padding-block: 5rem 1.5rem; background: var(--canvas); color: var(--fg); }
+  .footer-grid { display: grid; gap: 2.5rem; }
+  .footer-brand p { max-width: 28ch; margin-top: 1rem; color: var(--fg-muted); }
+  .footer-heading { margin-bottom: 0.5rem; font-size: 0.875rem; font-weight: 600; }
+  .site-footer a:not(.logo) { color: var(--fg-muted); text-decoration: none; }
+  .site-footer a:hover { color: var(--fg); }
+  li a, .footer-bottom a { display: inline-flex; align-items: center; min-height: 44px; font-size: 0.875rem; }
+  .footer-social { display: flex; gap: 0.5rem; margin-top: 1rem; }
+  .footer-social a { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; }
+  .footer-bottom { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem 2rem; margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--line); color: var(--fg-muted); font-size: 0.75rem; }
+  @media (width >= 40rem) { .footer-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (width >= 64rem) { .footer-grid { grid-template-columns: 1.4fr repeat(3, minmax(0, 1fr)); } }
+</style>

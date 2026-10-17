@@ -120,7 +120,7 @@
     outline-offset: 2px;
   }
 
-  :target {
+  [id] {
     scroll-margin-top: 80px;
   }
 
@@ -131,6 +131,14 @@
 }
 
 @layer components {
+  @media (prefers-reduced-motion: no-preference) {
+    .motion-ok [data-reveal]:not([data-revealed]) {
+      opacity: 0;
+      transform: translateY(24px);
+      filter: blur(8px);
+    }
+  }
+
   .type-display {
     font-size: clamp(2.75rem, 1.5rem + 5vw, 5.5rem);
     line-height: 1.02;

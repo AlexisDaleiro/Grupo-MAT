@@ -1,0 +1,25 @@
+<a href="#contenido" class="skip-link" data-skip-link>Saltar al contenido</a>
+
+<script>
+  document.querySelector<HTMLAnchorElement>('[data-skip-link]')?.addEventListener('click', () => {
+    document.getElementById('contenido')?.focus({ preventScroll: true });
+  });
+</script>
+
+<style>
+  .skip-link {
+    position: fixed;
+    top: 0.5rem;
+    left: 0.5rem;
+    z-index: 100;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-pill);
+    background: var(--brand-strong);
+    color: var(--on-brand);
+    transform: translateY(calc(-100% - 1rem));
+  }
+  .skip-link:focus { transform: none; }
+</style>

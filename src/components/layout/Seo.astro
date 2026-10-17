@@ -1,0 +1,28 @@
+---
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+}
+const {
+  title = 'Grupo MAT · Software a medida para empresas B2B en Uruguay',
+  description = 'Agencia de software en Uruguay. E-commerce B2B, landing pages y automatizaciones para distribuidoras, mayoristas y fabricantes.',
+  image,
+} = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url);
+const imageUrl = image ? new URL(image, canonical) : undefined;
+---
+
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Grupo MAT" />
+<meta property="og:locale" content="es_UY" />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta name="twitter:card" content={imageUrl ? 'summary_large_image' : 'summary'} />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+{imageUrl && <><meta property="og:image" content={imageUrl} /><meta name="twitter:image" content={imageUrl} /></>}

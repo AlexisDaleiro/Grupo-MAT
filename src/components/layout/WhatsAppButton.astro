@@ -1,0 +1,48 @@
+---
+import { Icon } from 'astro-icon/components';
+import { contact } from '@/data/site';
+---
+
+{contact.whatsappUrl && (
+  <a href={contact.whatsappUrl} class="whatsapp-button" data-whatsapp-button data-track="whatsapp" aria-label="Escribinos por WhatsApp" aria-hidden="true" tabindex="-1" target="_blank" rel="noopener">
+    <Icon name="simple-icons:whatsapp" size={24} aria-hidden="true" />
+  </a>
+)}
+
+<script>
+  const button = document.querySelector<HTMLAnchorElement>('[data-whatsapp-button]');
+  if (button) {
+    const hero = document.querySelector<HTMLElement>('[data-hero]');
+    let passedHero = !hero || hero.getBoundingClientRect().bottom <= 0;
+    const blockers = new Set<Element>();
+    let menuOpen = document.documentElement.hasAttribute('data-menu-open');
+    const sync = () => {
+      const visible = passedHero && blockers.size === 0 && !menuOpen;
+      button.dataset.visible = String(visible);
+      button.setAttribute('aria-hidden', String(!visible));
+      button.tabIndex = visible ? 0 : -1;
+    };
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.target === hero) passedHero = entry.boundingClientRect.bottom <= 0;
+        else if (entry.isIntersecting) blockers.add(entry.target);
+        else blockers.delete(entry.target);
+      });
+      sync();
+    });
+    if (hero) observer.observe(hero);
+    document.querySelectorAll('[data-final-cta], #contacto, [data-site-footer]').forEach((element) => {
+      if (element.getBoundingClientRect().top < innerHeight && element.getBoundingClientRect().bottom > 0) blockers.add(element);
+      observer.observe(element);
+    });
+    window.addEventListener('menu:toggle', (event) => { menuOpen = event.detail; sync(); });
+    sync();
+  }
+</script>
+
+<style>
+  .whatsapp-button { position: fixed; right: max(1.25rem, env(safe-area-inset-right)); bottom: max(1.25rem, env(safe-area-inset-bottom)); z-index: 40; display: grid; place-items: center; width: 56px; height: 56px; border: 1px solid var(--line); border-radius: var(--radius-pill); background: color-mix(in srgb, var(--canvas) 70%, transparent); color: var(--fg); box-shadow: var(--shadow-card); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); opacity: 0; filter: blur(6px); visibility: hidden; pointer-events: none; transition: opacity 300ms var(--ease-out-expo), filter 300ms var(--ease-out-expo), visibility 0s 300ms; }
+  .whatsapp-button[data-visible="true"] { opacity: 1; filter: blur(0); visibility: visible; pointer-events: auto; transition-delay: 0s; }
+  .whatsapp-button:hover { border-color: var(--brand); }
+  @media (prefers-reduced-motion: reduce) { .whatsapp-button { transition: none; filter: none; } }
+</style>

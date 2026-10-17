@@ -43,7 +43,7 @@ const { as: Tag = 'article', class: className, ...attributes } = Astro.props;
     background: radial-gradient(480px circle at var(--x, 50%) var(--y, 50%), var(--spot-fill), transparent 60%);
   }
 
-  @media (hover: hover) and (pointer: fine) {
+  @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
     :global([data-spotlight-group]:hover) .spotlight::before,
     .spotlight:hover::after { opacity: 1; }
   }
