@@ -68,7 +68,38 @@ try {
       },
     });
 
+    const hero = document.querySelector<HTMLElement>('[data-hero]');
+    const heroContent = hero?.querySelector<HTMLElement>('[data-hero-content]');
+    if (hero && heroContent) gsap.to(heroContent, {
+      opacity: 0.3, y: -40, ease: 'none',
+      scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true },
+    });
+
+    const projectVisual = document.querySelector<HTMLElement>('[data-project-visual]');
+    const projectImage = projectVisual?.querySelector<HTMLElement>('[data-project-image]');
+    if (projectVisual && projectImage) gsap.fromTo(projectImage, { scale: 1.06 }, {
+      scale: 1, ease: 'none',
+      scrollTrigger: { trigger: projectVisual, start: 'top bottom', end: 'bottom center', scrub: true },
+    });
+
+    const desktopMotion = gsap.matchMedia();
+    desktopMotion.add('(min-width: 1024px)', () => {
+      const process = document.querySelector<HTMLElement>('[data-process]');
+      const steps = process?.querySelector<HTMLOListElement>('.process-steps');
+      const progress = process?.querySelector<HTMLElement>('[data-process-progress]');
+      if (!process || !steps || !progress) return;
+      gsap.fromTo(progress, { scaleY: 0 }, {
+        scaleY: 1, ease: 'none',
+        scrollTrigger: { trigger: steps, start: 'top center', end: 'bottom center', scrub: true },
+      });
+      steps.querySelectorAll<HTMLElement>('[data-process-step]').forEach((step) => gsap.fromTo(step,
+        { opacity: 0.4 },
+        { opacity: 1, ease: 'none', scrollTrigger: { trigger: step, start: 'top 80%', end: 'top center', scrub: true } },
+      ));
+    });
+
     return () => {
+      desktopMotion.revert();
       document.removeEventListener('click', onAnchor);
       window.removeEventListener('menu:toggle', onMenu);
       gsap.ticker.remove(tick);

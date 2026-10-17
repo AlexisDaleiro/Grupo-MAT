@@ -1,5 +1,24 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import Hero from '@/components/sections/Hero.astro';
+import StackStrip from '@/components/sections/StackStrip.astro';
+import Services from '@/components/sections/Services.astro';
+import WhyUs from '@/components/sections/WhyUs.astro';
+import FeaturedProject from '@/components/sections/FeaturedProject.astro';
+import Process from '@/components/sections/Process.astro';
+import Team from '@/components/sections/Team.astro';
+import Faq from '@/components/sections/Faq.astro';
+import FinalCta from '@/components/sections/FinalCta.astro';
 ---
 
-<BaseLayout />
+<BaseLayout hasHero>
+  <Hero />
+  <StackStrip />
+  <Services />
+  <WhyUs />
+  <FeaturedProject />
+  <Process />
+  <Team />
+  <Faq />
+  <FinalCta />
+</BaseLayout>

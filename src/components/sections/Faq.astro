@@ -1,0 +1,42 @@
+---
+import { Icon } from 'astro-icon/components';
+import Container from '@/components/ui/Container.astro';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import { faq } from '@/data/site';
+---
+
+<section id="preguntas" class="section-space faq" aria-labelledby="faq-title">
+  <Container>
+    <div class="faq-grid">
+      <SectionHeading id="faq-title" eyebrow="Preguntas frecuentes" title="Lo que nos suelen preguntar." reveal />
+      <div class="faq-list">
+        {faq.map((item) => (
+          <details data-reveal>
+            <summary>{item.question}<Icon name="lucide:plus" size={20} aria-hidden="true" /></summary>
+            <div class="faq-answer"><p>{item.answer}</p></div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </Container>
+</section>
+
+<style>
+  .faq { border-top: 1px solid var(--line); }
+  .faq-grid { display: grid; align-items: start; gap: 3rem; }
+  details { border-bottom: 1px solid var(--line); }
+  details:first-child { border-top: 1px solid var(--line); }
+  summary { display: flex; justify-content: space-between; align-items: center; gap: 1rem; min-height: 64px; padding-block: 1.25rem; list-style: none; font-weight: 500; line-height: 1.5; cursor: pointer; }
+  summary::-webkit-details-marker { display: none; }
+  summary :global(svg) { flex-shrink: 0; color: var(--brand-text); }
+  details[open] summary :global(svg) { transform: rotate(45deg); }
+  .faq-answer { padding: 0 2rem 1.5rem 0; color: var(--fg-muted); }
+  @media (prefers-reduced-motion: no-preference) {
+    summary :global(svg) { transition: transform 400ms var(--ease-out-expo); }
+    @supports (interpolate-size: allow-keywords) and selector(details::details-content) {
+      details::details-content { block-size: 0; overflow: clip; transition: block-size 400ms var(--ease-out-expo), content-visibility 400ms allow-discrete; }
+      details[open]::details-content { block-size: auto; }
+    }
+  }
+  @media (width >= 64rem) { .faq-grid { grid-template-columns: .8fr 1.2fr; gap: 5rem; } }
+</style>

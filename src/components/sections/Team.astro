@@ -1,0 +1,35 @@
+---
+import { Icon } from 'astro-icon/components';
+import Container from '@/components/ui/Container.astro';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import SpotlightCard from '@/components/ui/SpotlightCard.astro';
+import Avatar from '@/components/ui/Avatar.astro';
+import { team } from '@/data/site';
+---
+
+<section id="nosotros" class="section-space" aria-labelledby="team-title">
+  <Container>
+    <SectionHeading id="team-title" eyebrow="Nosotros" title="Tres personas. Un equipo. Grupo MAT." lead="MAT son nuestras iniciales: Mara, Alexis y Thiago. Trabajás directo con quienes diseñan y programan tu proyecto, sin intermediarios." reveal />
+    <div class="team-grid" data-spotlight-group>
+      {team.map((member) => (
+        <SpotlightCard class="team-card" data-reveal>
+          <Avatar name={member.name} photo={member.photo} size={80} />
+          <div><h3>{member.name}</h3><p class="team-card__role">{member.role}</p></div>
+          <p class="team-card__description">{member.text}</p>
+          {member.linkedin && <a class="team-card__social" href={member.linkedin} target="_blank" rel="noopener" aria-label={`LinkedIn de ${member.name}`}><Icon name="lucide:linkedin" size={20} aria-hidden="true" /></a>}
+        </SpotlightCard>
+      ))}
+    </div>
+  </Container>
+</section>
+
+<style>
+  .team-grid { display: grid; gap: 1rem; margin-top: 3rem; }
+  :global(.team-card) { position: relative; display: grid; align-content: start; justify-items: start; gap: 1.5rem; padding: 2rem; }
+  .team-card__role { margin-top: .375rem; color: var(--brand-text); font-family: var(--font-mono); font-size: .75rem; }
+  .team-card__description { max-width: 32ch; color: var(--fg-muted); }
+  .team-card__social { position: absolute; top: 1.25rem; right: 1.25rem; display: grid; place-items: center; width: 44px; height: 44px; color: var(--fg-muted); border-radius: 50%; }
+  .team-card__social:hover { color: var(--fg); }
+  @media (width >= 48rem) { .team-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } :global(.team-card) { padding: 1.5rem; } }
+  @media (width >= 64rem) { :global(.team-card) { padding: 2rem; } }
+</style>

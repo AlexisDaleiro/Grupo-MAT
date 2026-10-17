@@ -7,14 +7,15 @@ type Props = HTMLAttributes<'div'> & {
   eyebrow?: string;
   lead?: string;
   align?: 'left' | 'center';
+  reveal?: boolean;
 };
-const { id, title, eyebrow, lead, align = 'left', class: className, ...attributes } = Astro.props;
+const { id, title, eyebrow, lead, align = 'left', reveal = false, class: className, ...attributes } = Astro.props;
 ---
 
 <div {...attributes} class:list={['section-heading', { 'section-heading--center': align === 'center' }, className]}>
-  {eyebrow && <p class="eyebrow">{eyebrow}</p>}
-  <h2 id={id}>{title}</h2>
-  {lead && <p class="text-lead">{lead}</p>}
+  {eyebrow && <p class="eyebrow" data-reveal={reveal ? '' : undefined}>{eyebrow}</p>}
+  <h2 id={id} data-reveal={reveal ? '' : undefined}>{title}</h2>
+  {lead && <p class="text-lead" data-reveal={reveal ? '' : undefined}>{lead}</p>}
 </div>
 
 <style>

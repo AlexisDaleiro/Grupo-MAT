@@ -1,0 +1,47 @@
+---
+import Container from '@/components/ui/Container.astro';
+import Badge from '@/components/ui/Badge.astro';
+import Button from '@/components/ui/Button.astro';
+import { contact } from '@/data/site';
+---
+
+<section class="hero" data-hero data-theme="dark" aria-labelledby="hero-title">
+  <div class="hero__grid" aria-hidden="true"></div>
+  <div class="hero__glow" aria-hidden="true"></div>
+  <Container>
+    <div class="hero__content" data-hero-content>
+      <div class="hero__entry" style="--hero-delay: 0s"><Badge>Agencia de software B2B · Uruguay</Badge></div>
+      <h1 id="hero-title" class="type-display">
+        <span class="hero__entry" style="--hero-delay: .05s">Software a medida</span>
+        <span class="hero__entry hero__accent" style="--hero-delay: .15s">para empresas que venden a empresas.</span>
+      </h1>
+      <p class="text-lead hero__entry hero__lead" style="--hero-delay: .25s">Diseñamos y desarrollamos e-commerce B2B, landing pages y automatizaciones para distribuidoras, mayoristas y fabricantes. Rápido, sin plantillas y con soporte todos los meses.</p>
+      <div class="hero__actions hero__entry" style="--hero-delay: .35s">
+        <Button href={contact.appointmentUrl} target={contact.calendlyUrl ? '_blank' : undefined} arrow>Agendar una llamada</Button>
+        <Button href="/proyectos" variant="secondary">Ver proyectos</Button>
+      </div>
+      <p class="hero__microcopy hero__entry" style="--hero-delay: .45s">La primera llamada de diagnóstico no tiene costo.</p>
+    </div>
+  </Container>
+</section>
+
+<style>
+  .hero { position: relative; isolation: isolate; display: grid; align-items: center; min-height: 88svh; overflow: clip; padding-block: 9rem 6rem; background: var(--canvas); color: var(--fg); }
+  .hero__grid, .hero__glow { position: absolute; z-index: -1; pointer-events: none; }
+  .hero__grid { inset: 0; background-image: linear-gradient(rgb(148 163 184 / .07) 1px, transparent 1px), linear-gradient(90deg, rgb(148 163 184 / .07) 1px, transparent 1px); background-size: 64px 64px; mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 40%, transparent 100%); }
+  .hero__glow { width: 900px; height: 500px; top: -280px; left: calc(50% - 450px); background: radial-gradient(ellipse, rgb(2 132 199 / .3), transparent 70%); filter: blur(40px); }
+  .hero__content { display: grid; justify-items: center; gap: 1.75rem; text-align: center; }
+  h1 { max-width: 100%; }
+  h1 span { display: block; }
+  .hero__accent { background: linear-gradient(110deg, #38bdf8, #0284c7); background-clip: text; -webkit-text-fill-color: transparent; }
+  .hero__lead { max-width: 60ch; }
+  .hero__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: .75rem; }
+  .hero__microcopy { color: var(--fg-muted); font-size: .8125rem; }
+  @media (prefers-reduced-motion: no-preference) {
+    .hero__entry { animation: hero-in .9s var(--ease-out-expo) var(--hero-delay) both; }
+    .hero__glow { animation: hero-glow 18s ease-in-out infinite alternate; }
+  }
+  @keyframes hero-in { from { opacity: 0; transform: translateY(16px); filter: blur(8px); } to { opacity: 1; transform: translateY(0); filter: blur(0); } }
+  @keyframes hero-glow { to { transform: translate3d(32px, 28px, 0); } }
+  @media (width < 48rem) { .hero__actions { width: 100%; } .hero__actions :global(.button) { width: 100%; } }
+</style>

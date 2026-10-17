@@ -1,0 +1,31 @@
+---
+import { Icon } from 'astro-icon/components';
+import Container from '@/components/ui/Container.astro';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import { differentiators } from '@/data/site';
+---
+
+<section id="por-que" class="section-space why-us" aria-labelledby="why-title">
+  <Container>
+    <SectionHeading id="why-title" eyebrow="Por qué Grupo MAT" title="Un equipo chico, rápido y enfocado en B2B." reveal />
+    <div class="why-grid">
+      {differentiators.map((item) => (
+        <article data-reveal>
+          <Icon name={item.icon} size={25} aria-hidden="true" />
+          <h3>{item.title}</h3>
+          <p>{item.text}</p>
+        </article>
+      ))}
+    </div>
+  </Container>
+</section>
+
+<style>
+  .why-us { border-block: 1px solid var(--line); }
+  .why-grid { display: grid; gap: 2.5rem; margin-top: 3.5rem; }
+  article { display: grid; align-content: start; justify-items: start; gap: .875rem; }
+  article :global(svg) { margin-bottom: .5rem; color: var(--brand-text); }
+  p { max-width: 40ch; color: var(--fg-muted); }
+  @media (width >= 48rem) { .why-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 3rem; } }
+  @media (width >= 64rem) { .why-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 3.5rem 3rem; } article { grid-column: span 2; } article:nth-last-child(-n + 2) { grid-column: span 3; } }
+</style>

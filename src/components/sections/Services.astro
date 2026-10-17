@@ -1,0 +1,57 @@
+---
+import { Icon } from 'astro-icon/components';
+import Container from '@/components/ui/Container.astro';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import SpotlightCard from '@/components/ui/SpotlightCard.astro';
+import Button from '@/components/ui/Button.astro';
+import { homeServices } from '@/data/site';
+---
+
+<section id="servicios" class="section-space" aria-labelledby="services-title">
+  <Container>
+    <SectionHeading id="services-title" eyebrow="Servicios" title="Tres formas de hacer crecer tu operación B2B." lead="Cada proyecto se diseña y se programa desde cero para tu negocio." reveal />
+    <div class="services-grid" data-spotlight-group>
+      {homeServices.map((service, index) => (
+        <SpotlightCard class:list={['service-card', { 'service-card--featured': index === 0 }]} data-reveal>
+          <div class="service-card__top">
+            <Icon name={service.icon} size={28} class="service-card__icon" aria-hidden="true" />
+            <h3>{service.title}</h3>
+            <p class="service-card__description">{service.description}</p>
+          </div>
+          <ul role="list">
+            {service.bullets.map((bullet) => <li><Icon name="lucide:check" size={17} aria-hidden="true" /><span>{bullet}</span></li>)}
+          </ul>
+          <div class="service-card__bottom">
+            <p class="service-card__timeline">{service.timeline}</p>
+            <Button href={service.href} variant="ghost" arrow>{service.link}</Button>
+          </div>
+        </SpotlightCard>
+      ))}
+    </div>
+  </Container>
+</section>
+
+<style>
+  .services-grid { display: grid; gap: 1rem; margin-top: 3rem; }
+  :global(.service-card) { display: flex; flex-direction: column; gap: 1.75rem; padding: 1.75rem; }
+  .service-card__top { display: grid; justify-items: start; gap: 1rem; }
+  .service-card__icon { color: var(--brand-text); }
+  .service-card__description, li { color: var(--fg-muted); }
+  ul { display: grid; align-content: start; gap: .625rem; }
+  li { display: flex; gap: .625rem; font-size: .9375rem; }
+  li :global(svg) { flex-shrink: 0; margin-top: .3rem; color: var(--brand-text); }
+  .service-card__bottom { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .75rem; margin-top: auto; padding-top: 1.25rem; border-top: 1px solid var(--line); }
+  .service-card__timeline { font-family: var(--font-mono); font-size: .75rem; color: var(--fg-muted); }
+  .service-card__bottom :global(.button) { padding-inline: 0; color: var(--brand-text); }
+  .service-card__bottom :global(.button:hover) { background: transparent; }
+  @media (width >= 48rem) { .services-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } :global(.service-card--featured) { grid-column: 1 / -1; } }
+  @media (width >= 64rem) {
+    .services-grid { grid-template-columns: 1.1fr 1fr; }
+    :global(.service-card) { padding: 2rem; }
+    :global(.service-card--featured) { grid-column: 1; grid-row: span 2; padding: 2.5rem; }
+    :global(.service-card--featured) .service-card__top { gap: 1.5rem; }
+    :global(.service-card--featured) .service-card__icon { width: 40px; height: 40px; }
+    :global(.service-card--featured) h3 { font-size: 2rem; }
+    :global(.service-card--featured) .service-card__description { max-width: 30ch; font-size: 1.25rem; }
+  }
+</style>

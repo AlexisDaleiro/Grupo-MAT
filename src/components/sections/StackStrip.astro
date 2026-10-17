@@ -1,0 +1,41 @@
+---
+import { Icon } from 'astro-icon/components';
+import Container from '@/components/ui/Container.astro';
+import { stack } from '@/data/site';
+---
+
+<section class="stack-strip" aria-labelledby="stack-title">
+  <Container>
+    <h2 id="stack-title" class="eyebrow">Construimos con</h2>
+    <div class="stack-strip__viewport">
+      <div class="stack-strip__track">
+        {[false, true].map((duplicate) => (
+          <ul class:list={['stack-strip__list', { 'stack-strip__duplicate': duplicate }]} aria-hidden={duplicate ? 'true' : undefined} role="list">
+            {stack.map((item) => <li><Icon name={item.icon} size={26} aria-hidden="true" /><span>{item.label}</span></li>)}
+          </ul>
+        ))}
+      </div>
+    </div>
+  </Container>
+</section>
+
+<style>
+  .stack-strip { overflow: hidden; border-bottom: 1px solid var(--line); padding-block: 2.5rem 3rem; }
+  h2 { margin-bottom: 1.75rem; text-align: center; }
+  .stack-strip__viewport { overflow: hidden; mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+  .stack-strip__track { display: flex; width: max-content; }
+  .stack-strip__list { display: flex; align-items: center; justify-content: space-around; flex-shrink: 0; gap: 3rem; min-width: 68rem; padding-inline: 1.5rem; }
+  li { display: flex; flex-shrink: 0; align-items: center; gap: .625rem; color: var(--fg-muted); font-size: .9375rem; font-weight: 500; }
+  li:hover { color: var(--fg); }
+  @media (prefers-reduced-motion: no-preference) {
+    .stack-strip__track { animation: stack-marquee 40s linear infinite; }
+    .stack-strip:hover .stack-strip__track { animation-play-state: paused; }
+  }
+  @keyframes stack-marquee { to { transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce) {
+    .stack-strip__viewport { mask-image: none; }
+    .stack-strip__track { width: 100%; }
+    .stack-strip__list { min-width: 0; width: 100%; flex-wrap: wrap; justify-content: center; gap: 1.5rem 2rem; padding: 0; }
+    .stack-strip__duplicate { display: none; }
+  }
+</style>

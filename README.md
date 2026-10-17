@@ -4,7 +4,7 @@ Sitio de Grupo MAT, agencia de software B2B de Uruguay. Astro con generación es
 
 ## Estado
 
-Fase 2: layout y núcleo de movimiento. Están implementados el sistema de diseño, SEO base, skip link, navegación, menú móvil, footer, WhatsApp y los módulos globales de scroll, reveals y spotlight. La ruta `/` conserva el contenido principal vacío dentro del layout; las secciones de la Home se incorporan en la Fase 3, con aprobación entre fases.
+Fase 3: Home. Están implementados el sistema de diseño, layout, navegación, menú móvil, footer, WhatsApp y todas las secciones de la Home, con el copy de la especificación. El formulario es un placeholder estático; las colecciones y páginas internas se incorporan en la Fase 4, y el formulario funcional en la Fase 5, con aprobación entre fases.
 
 ## Desarrollo local
 
@@ -15,7 +15,7 @@ npm ci
 npm run dev
 ```
 
-El servidor de desarrollo usa `http://localhost:4321` por defecto. No necesitás credenciales para levantar el layout vacío ni para compilar esta fase.
+El servidor de desarrollo usa `http://localhost:4321` por defecto. No necesitás credenciales para levantar la Home ni para compilar esta fase.
 
 | Comando | Uso |
 | --- | --- |
@@ -37,7 +37,7 @@ Geist y Geist Mono se sirven desde sus archivos variables latin de Fontsource co
 | `Button` | Variantes `primary`, `secondary` y `ghost`; `href` genera un enlace y su ausencia, un botón. `arrow` agrega la flecha. Acepta atributos del elemento nativo. |
 | `Badge` | Variantes `neutral` y `status`. La segunda incluye un punto con pulso de opacidad, desactivado con reduced motion. |
 | `Container` | Ancho máximo de 72rem y padding lateral adaptable; `as` permite `div`, `section` o `article`. |
-| `SectionHeading` | `id` para el h2, `title`, `eyebrow`, `lead` y `align` (`left` o `center`). |
+| `SectionHeading` | `id` para el h2, `title`, `eyebrow`, `lead` y `align` (`left` o `center`). `reveal` anima cada texto por separado. |
 | `SpotlightCard` | Superficie, borde y sombra del tema. El grupo usa `data-spotlight-group`; la posición reactiva al cursor se incorpora en la Fase 2. |
 | `Logo` | Link al inicio; `context="nav"` (18px) o `context="footer"` (22px). |
 | `ProjectPlaceholder` | `name` del proyecto; visual oscuro con grid y “Capturas próximamente”. |
@@ -64,7 +64,7 @@ La navegación usa los links de `src/data/site.ts`. El nav cambia a cristal desp
 
 El botón de WhatsApp aparece al pasar el hero y se oculta con el menú, CTA final o footer visibles. No se renderiza si el número público está vacío. El spotlight se activa solo con mouse fino, hover y sin reduced motion. No hay ClientRouter ni listeners de navegación de View Transitions.
 
-`Seo` contiene los metadatos base y admite una imagen real opcional. Los metadatos por página, JSON-LD, imagen OG y analítica quedan para la Fase 6. Las animaciones específicas del hero, proceso y proyecto se incorporan con sus secciones en la Fase 3. Los enlaces a páginas internas se completan al implementar sus rutas en la Fase 4.
+`Seo` contiene los metadatos base y admite una imagen real opcional. Los metadatos por página, JSON-LD, imagen OG y analítica quedan para la Fase 6. Los enlaces a páginas internas se completan al implementar sus rutas en la Fase 4.
 
 Partytown se activa solo cuando existe `PUBLIC_GA_ID`, para evitar registrar un worker de analítica que todavía no se usa. La configuración consulta únicamente variables públicas con el `loadEnv` de Vite que ya incluye Astro, sin agregar dependencias. La inyección de GA4 sigue pendiente de la Fase 6.
 
@@ -74,6 +74,24 @@ Pruebas locales en Chrome 155 sobre una fixture temporal: 360, 768, 1024 y 1440p
 
 Sin GA y sin hidratar islas en desktop, el JS inicial medido fue de **55.395 bytes gzip**, incluyendo módulos descargados y scripts inline. React no se descargó en desktop. En un trace de scroll de Chrome a 1440×900, el intervalo P95 entre frames fue de **5,7ms**, sin tareas mayores a 50ms. El reporte y el trace quedan fuera del repo; la fixture se retira de la entrega. Estos valores corresponden al núcleo de movimiento y se vuelven a medir cuando se incorpore la Home y en la Fase 7.
 
+## Home de la Fase 3
+
+Las secciones están en `src/components/sections/`: hero, stack, servicios, diferenciales, DISTRICO, proceso, equipo, FAQ y CTA final. Nav, footer y WhatsApp se reutilizan desde el layout. Stack, tarjetas de servicios, diferenciales, pasos, equipo y FAQ se editan en `src/data/site.ts`. Los integrantes admiten `photo` y `linkedin` opcionales; en producción se muestran iniciales sin el badge de desarrollo. No se inventan fotos, logos ni capturas.
+
+El hero usa entradas CSS con los delays de la especificación, grid y glow de fondo. Su contenido pierde opacidad y sube 40px al scrollear. El visual de DISTRICO reduce su escala de 1.06 a 1 dentro de un recorte. En desktop, el proceso tiene una introducción sticky, una línea con `scaleY` y pasos que ganan opacidad al llegar al centro. En mobile conserva una lista con reveals. Todo el scroll se controla desde el módulo global existente, dentro de `gsap.matchMedia()`; reduced motion revierte las animaciones.
+
+La franja de tecnologías usa dos listas iguales y un ciclo CSS de 40 segundos, con pausa en hover. La copia está oculta para tecnologías asistivas; con reduced motion se muestra una sola lista estática. La FAQ usa `details`/`summary` y mejora progresivamente con `::details-content`; sin soporte abre de forma nativa.
+
+**Pendientes intencionales:** DISTRICO usa por ahora los datos confirmados de `site.ts`; la selección desde Content Collections con `featured: true` se incorpora en la Fase 4. El CTA final muestra una vista estática del formulario, sin campos editables ni envío; ofrece WhatsApp mientras se implementa `ContactForm` en la Fase 5. Calendly y redes se muestran solo si tienen URL. Los links a servicios, proyectos, contacto y privacidad apuntan a las rutas previstas para la Fase 4.
+
+Referencias de implementación: [componentes Astro](https://docs.astro.build/en/basics/astro-components/), [GSAP matchMedia](https://gsap.com/docs/v3/GSAP/gsap.matchMedia()/) y [ScrollTrigger](https://gsap.com/docs/v3/Plugins/ScrollTrigger/).
+
+### Verificación de la Fase 3
+
+`npx astro check`: 33 archivos, sin errores, warnings ni hints. `npm run build`: correcto. La Home compilada se verificó en Chrome 155 a 360, 768, 1024 y 1440px, en claro y oscuro: secciones y copy, ausencia de overflow horizontal, navegación con teclado, offset y foco de anchors, reveals, menú, FAQ nativa, placeholders y visibilidad de WhatsApp. También se verificaron reduced motion, su activación en vivo y JavaScript desactivado.
+
+Sin GA y sin islas hidratadas, el JS inicial de desktop fue de **55.068 bytes gzip**, incluyendo scripts inline; no se descargó React. El trace de scroll de la Home completa a 1440×900 dio un intervalo P95 de **11,1ms** entre frames y **ninguna tarea mayor a 50ms**, con el checker ya terminado. Son mediciones locales; Lighthouse y QA de otros navegadores siguen para la Fase 7. Las capturas, scripts de verificación, reporte y trace se guardan fuera del repo.
+
 ### Compatibilidad con Cloudflare Pages
 
 Para conservar el hosting pedido se usa Astro **5.18.2**, `@astrojs/cloudflare` **12.6.13** y `@astrojs/react` **4.4.2**, con versiones fijadas y lockfile. Es una excepción a usar la última versión mayor, acordada con el cliente: el adaptador actual eliminó el soporte de Pages y requiere Cloudflare Workers. TypeScript usa **6.0.3**, la última versión compatible con los peers de `@astrojs/check` **0.9.10** (TypeScript 5 o 6; todavía no admite TypeScript 7). Las demás dependencias se instalan en su última versión estable; Tailwind se mantiene en v4, como pide la especificación.
@@ -82,7 +100,7 @@ El adaptador usa `imageService: 'compile'` para optimizar imágenes durante el b
 
 Referencias: [adaptador compatible con Astro 5](https://v5.docs.astro.build/en/guides/integrations-guide/cloudflare/), [retiro del soporte de Pages en el adaptador actual](https://docs.astro.build/en/guides/integrations-guide/cloudflare/#removed-cloudflare-pages-support).
 
-**Limitación conocida de esta línea:** la auditoría de npm del 17/10/2026 reporta 8 dependencias afectadas (1 crítica, 4 altas, 2 moderadas y 1 baja). Incluye avisos en Astro, el adaptador y sus herramientas transitivas; npm propone versiones mayores para corregirlos, que requieren migrar a Workers. El layout vacío no usa las funciones de servidor ni procesa imágenes, pero la compatibilidad con Pages no equivale a una auditoría limpia. Revisá esta limitación antes de publicar o implementar las funciones afectadas. No se aplica `npm audit fix --force` porque alteraría las versiones y el hosting acordados.
+**Limitación conocida de esta línea:** la auditoría de npm del 17/10/2026 reporta 8 dependencias afectadas (1 crítica, 4 altas, 2 moderadas y 1 baja). Incluye avisos en Astro, el adaptador y sus herramientas transitivas; npm propone versiones mayores para corregirlos, que requieren migrar a Workers. Las páginas actuales son estáticas y todavía no procesan imágenes, pero la compatibilidad con Pages no equivale a una auditoría limpia. Revisá esta limitación antes de publicar o implementar las funciones afectadas. No se aplica `npm audit fix --force` porque alteraría las versiones y el hosting acordados.
 
 ## Variables de entorno
 
@@ -161,7 +179,7 @@ Referencia: [crear una regla de rate limiting en Cloudflare](https://developers.
 
 ## Pendientes de fases siguientes
 
-- Home (Fase 3) y contenido con páginas internas (Fase 4).
+- Content Collections y páginas internas (Fase 4), incluida la selección de DISTRICO desde la colección.
 - Formulario, API y eventos de analítica (Fase 5).
 - SEO, JSON-LD, `robots.txt`, headers, OG y GA4 condicional con Partytown (Fase 6).
 - QA de rendimiento, accesibilidad y navegadores (Fase 7).
