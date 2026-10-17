@@ -1,0 +1,33 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { Icon } from 'astro-icon/components';
+import SpotlightCard from '@/components/ui/SpotlightCard.astro';
+import ProjectMedia from '@/components/ui/ProjectMedia.astro';
+import Badge from '@/components/ui/Badge.astro';
+import { projectStatus } from '@/lib/content';
+
+interface Props { project: CollectionEntry<'proyectos'> }
+const { project } = Astro.props;
+---
+
+<SpotlightCard class="project-card" data-reveal>
+  <div class="project-card__visual"><ProjectMedia image={project.data.cover} name={project.data.title} sizes="(min-width: 1024px) 520px, (min-width: 768px) 50vw, 100vw" /></div>
+  <div class="project-card__copy">
+    <Badge variant="status">{projectStatus(project.data.status)}</Badge>
+    <h3><a href={`/proyectos/${project.id}`}>{project.data.client}<Icon name="lucide:arrow-up-right" size={20} aria-hidden="true" /></a></h3>
+    <p>{project.data.industry}</p>
+  </div>
+</SpotlightCard>
+
+<style>
+  :global(.project-card) { overflow: hidden; }
+  .project-card__visual { overflow: hidden; border-bottom: 1px solid var(--line); }
+  .project-card__visual :global(.project-placeholder) { border: 0; border-radius: 0; }
+  .project-card__visual :global(picture img) { aspect-ratio: 16 / 10; object-fit: cover; }
+  .project-card__copy { display: grid; justify-items: start; gap: 1rem; padding: 1.5rem; }
+  h3 { width: 100%; }
+  h3 a { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 44px; text-decoration: none; }
+  h3 a:hover { color: var(--brand-text); }
+  p { color: var(--fg-muted); font-size: .9375rem; }
+  @media (width >= 48rem) { .project-card__copy { padding: 2rem; } }
+</style>

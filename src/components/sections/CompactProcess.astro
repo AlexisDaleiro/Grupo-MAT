@@ -1,0 +1,24 @@
+---
+import Container from '@/components/ui/Container.astro';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import { processSteps } from '@/data/site';
+---
+
+<section class="section-space compact-process" aria-labelledby="compact-process-title">
+  <Container>
+    <SectionHeading id="compact-process-title" title="Cómo trabajamos." reveal />
+    <ol role="list">
+      {processSteps.map((step) => <li data-reveal><span aria-hidden="true">{step.number}</span><h3>{step.title}</h3><p>{step.text}</p></li>)}
+    </ol>
+  </Container>
+</section>
+
+<style>
+  .compact-process { border-top: 1px solid var(--line); }
+  ol { display: grid; gap: 2.5rem; margin-top: 3rem; }
+  li { display: grid; align-content: start; gap: 1rem; border-top: 1px solid var(--line); padding-top: 1.5rem; }
+  li span { font-family: var(--font-mono); font-size: .8125rem; color: var(--brand-text); }
+  p { color: var(--fg-muted); }
+  @media (width >= 48rem) { ol { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (width >= 64rem) { ol { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2rem; } }
+</style>

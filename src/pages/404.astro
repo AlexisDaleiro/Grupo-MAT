@@ -1,0 +1,10 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHeader from '@/components/sections/PageHeader.astro';
+import Button from '@/components/ui/Button.astro';
+Astro.response.status = 404;
+---
+
+<BaseLayout title="Página no encontrada · Grupo MAT" description="Puede que el enlace esté roto o que la página se haya movido." hasHero>
+  <PageHeader title="Esta página no existe." lead="Puede que el enlace esté roto o que la página se haya movido."><Button href="/" arrow>Volver al inicio</Button></PageHeader>
+</BaseLayout>

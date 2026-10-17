@@ -91,17 +91,6 @@ export const differentiators = [
   { title: 'Foco en resultados', icon: 'lucide:chart-no-axes-combined', text: 'Medimos lo que importa para tu negocio: pedidos, consultas y horas ahorradas.' },
 ] as const;
 
-// Datos confirmados de la Home. La colección de proyectos se incorpora en la Fase 4.
-export const featuredProject = {
-  title: 'DISTRICO', href: '/proyectos/districo', status: 'En desarrollo',
-  summary: 'Plataforma de pedidos mayoristas para una distribuidora de productos para mascotas, integrada con SAP y Mercadea.',
-  metadata: [
-    ['Rubro', 'Distribución · Mascotas'], ['Servicio', 'E-commerce B2B'],
-    ['Stack', 'Next.js · NestJS'], ['Integraciones', 'SAP · Mercadea'],
-    ['Lanzamiento estimado', 'primer semestre de 2027'],
-  ],
-} as const;
-
 export const processSteps = [
   { number: '01', title: 'Diagnóstico', text: 'Una llamada sin costo para entender tu negocio, tus sistemas y tus objetivos.' },
   { number: '02', title: 'Diseño', text: 'Definimos alcance, plazos y presupuesto. Diseñamos la experiencia antes de escribir código.' },

@@ -4,7 +4,7 @@ Sitio de Grupo MAT, agencia de software B2B de Uruguay. Astro con generación es
 
 ## Estado
 
-Fase 3: Home. Están implementados el sistema de diseño, layout, navegación, menú móvil, footer, WhatsApp y todas las secciones de la Home, con el copy de la especificación. El formulario es un placeholder estático; las colecciones y páginas internas se incorporan en la Fase 4, y el formulario funcional en la Fase 5, con aprobación entre fases.
+Fase 4: contenido y páginas internas. Están implementados la Home, las colecciones de servicios y proyectos, las páginas de servicio, listado y detalle de proyectos, contacto, privacidad y 404. El formulario sigue siendo un placeholder estático hasta la Fase 5, con aprobación entre fases.
 
 ## Desarrollo local
 
@@ -64,7 +64,7 @@ La navegación usa los links de `src/data/site.ts`. El nav cambia a cristal desp
 
 El botón de WhatsApp aparece al pasar el hero y se oculta con el menú, CTA final o footer visibles. No se renderiza si el número público está vacío. El spotlight se activa solo con mouse fino, hover y sin reduced motion. No hay ClientRouter ni listeners de navegación de View Transitions.
 
-`Seo` contiene los metadatos base y admite una imagen real opcional. Los metadatos por página, JSON-LD, imagen OG y analítica quedan para la Fase 6. Los enlaces a páginas internas se completan al implementar sus rutas en la Fase 4.
+`Seo` contiene los metadatos base y admite una imagen real opcional. Las rutas internas ya reciben los títulos y descripciones de su contenido. JSON-LD, imagen OG, analítica y la revisión final de SEO quedan para la Fase 6.
 
 Partytown se activa solo cuando existe `PUBLIC_GA_ID`, para evitar registrar un worker de analítica que todavía no se usa. La configuración consulta únicamente variables públicas con el `loadEnv` de Vite que ya incluye Astro, sin agregar dependencias. La inyección de GA4 sigue pendiente de la Fase 6.
 
@@ -82,7 +82,7 @@ El hero usa entradas CSS con los delays de la especificación, grid y glow de fo
 
 La franja de tecnologías usa dos listas iguales y un ciclo CSS de 40 segundos, con pausa en hover. La copia está oculta para tecnologías asistivas; con reduced motion se muestra una sola lista estática. La FAQ usa `details`/`summary` y mejora progresivamente con `::details-content`; sin soporte abre de forma nativa.
 
-**Pendientes intencionales:** DISTRICO usa por ahora los datos confirmados de `site.ts`; la selección desde Content Collections con `featured: true` se incorpora en la Fase 4. El CTA final muestra una vista estática del formulario, sin campos editables ni envío; ofrece WhatsApp mientras se implementa `ContactForm` en la Fase 5. Calendly y redes se muestran solo si tienen URL. Los links a servicios, proyectos, contacto y privacidad apuntan a las rutas previstas para la Fase 4.
+Desde la Fase 4, DISTRICO se selecciona desde Content Collections con `featured: true`. El CTA final muestra una vista estática del formulario, sin campos editables ni envío; ofrece WhatsApp mientras se implementa `ContactForm` en la Fase 5. Calendly y redes se muestran solo si tienen URL. Los links a servicios, proyectos, contacto y privacidad ya tienen sus páginas.
 
 Referencias de implementación: [componentes Astro](https://docs.astro.build/en/basics/astro-components/), [GSAP matchMedia](https://gsap.com/docs/v3/GSAP/gsap.matchMedia()/) y [ScrollTrigger](https://gsap.com/docs/v3/Plugins/ScrollTrigger/).
 
@@ -91,6 +91,24 @@ Referencias de implementación: [componentes Astro](https://docs.astro.build/en/
 `npx astro check`: 33 archivos, sin errores, warnings ni hints. `npm run build`: correcto. La Home compilada se verificó en Chrome 155 a 360, 768, 1024 y 1440px, en claro y oscuro: secciones y copy, ausencia de overflow horizontal, navegación con teclado, offset y foco de anchors, reveals, menú, FAQ nativa, placeholders y visibilidad de WhatsApp. También se verificaron reduced motion, su activación en vivo y JavaScript desactivado.
 
 Sin GA y sin islas hidratadas, el JS inicial de desktop fue de **55.068 bytes gzip**, incluyendo scripts inline; no se descargó React. El trace de scroll de la Home completa a 1440×900 dio un intervalo P95 de **11,1ms** entre frames y **ninguna tarea mayor a 50ms**, con el checker ya terminado. Son mediciones locales; Lighthouse y QA de otros navegadores siguen para la Fase 7. Las capturas, scripts de verificación, reporte y trace se guardan fuera del repo.
+
+## Contenido y páginas de la Fase 4
+
+`src/content.config.ts` usa el loader `glob` de Astro 5 y schemas tipados. `src/content/servicios/*.md` genera las tres páginas con `getStaticPaths`; `relatedProject` es una referencia a la colección `proyectos`. `src/content/proyectos/*.md` genera las páginas de detalle, alimenta el listado y selecciona el destacado de la Home. El orden es ascendente por `order`, con el ID como desempate. Si hay varios destacados, la Home muestra el primero según ese orden.
+
+`PageHeader` es la banda oscura compartida. Los servicios incluyen audiencia, problemas, alcance, plazo, proceso compacto y proyecto relacionado cuando existe. Los proyectos renderizan Markdown con `render()` y estilos propios en `src/styles/prose.css`, sin plugin de tipografía. El listado agrega la tarjeta de contacto solo mientras haya menos de tres proyectos.
+
+Cover y galería locales usan `image()` y `Picture`, con AVIF/WebP, dimensiones explícitas y carga diferida. El logo es opcional. Sin imágenes se usa `ProjectPlaceholder`. Los botones externos se muestran solo si existe la URL; `repoUrl` requiere además `isOwnProject: true`, validado por el schema para evitar publicar repositorios de clientes.
+
+Contacto ofrece únicamente los canales configurados y un anchor a `#formulario`, cuyo destino recibe foco también con navegación nativa y sin JavaScript. El placeholder se comparte con el CTA de la Home y no permite ingresar ni enviar datos. Privacidad incluye la nota HTML de revisión legal; su fecha corresponde a esta versión del texto, no cambia con cada build. `404.astro` genera `404.html` para las rutas inexistentes de Pages. La URL directa `/404` se sirve como archivo estático; el estado HTTP 404 se verifica solicitando una ruta inexistente, según el comportamiento de [Cloudflare Pages](https://developers.cloudflare.com/pages/configuration/serving-pages/).
+
+Referencias: [Content Collections de Astro 5](https://v5.docs.astro.build/en/guides/content-collections/), [API de contenido](https://v5.docs.astro.build/en/reference/modules/astro-content/) e [imágenes](https://v5.docs.astro.build/en/guides/images/).
+
+### Verificación de la Fase 4
+
+`npx astro check`: 46 archivos, sin errores, warnings ni hints. `npm run build`: correcto, con las nueve páginas previstas. Se agregó un `.md` temporal con datos ya confirmados de DISTRICO y una imagen técnica de prueba: el build generó su ruta sin cambiar código, cover y galería en AVIF/WebP, logo y dimensiones explícitas. La fixture se retiró y el build final se regeneró sin esa página ni sus imágenes.
+
+Chrome 155: 72 escenarios (nueve rutas × cuatro anchos de 360, 768, 1024 y 1440px × claro/oscuro), sin overflow horizontal ni errores de consola. Se verificaron títulos, contenido, bandas oscuras, referencias, enlaces internos, anchors, ausencia de URLs e imágenes no configuradas, nota de privacidad y respuesta 404 para rutas inexistentes. También se probaron navegación y formulario estático sin JavaScript, reduced motion y reveals con movimiento normal. Capturas, scripts y reportes quedan fuera del repo. La revisión de otros navegadores, Lighthouse y axe sigue para la Fase 7.
 
 ### Compatibilidad con Cloudflare Pages
 
@@ -148,16 +166,18 @@ Referencia: [desplegar Astro en Cloudflare Pages con Astro 5](https://v5.docs.as
 
 ## Cómo agregar proyectos
 
-Las colecciones y las rutas de proyectos se implementan en la Fase 4. Una vez disponible esa fase:
+Las colecciones y rutas están disponibles. No hace falta editar los archivos de páginas:
 
 1. Creá `src/content/proyectos/<slug>.md`. El nombre del archivo define el slug de la página.
 2. Agregá el frontmatter con `title`, `client`, `industry`, `summary`, `services`, `stack`, `integrations`, `status`, `featured`, `order`, `seoTitle` y `seoDescription`.
 3. Usá `status: en-desarrollo` o `status: lanzado`. Agregá `launchEstimate` solo si hay una estimación confirmada.
 4. Guardá las imágenes en `src/assets/proyectos/<slug>/`. Referencialas con rutas relativas desde el Markdown mediante `cover`, `gallery` y `logo`, todos opcionales. Sin imágenes se mostrará `ProjectPlaceholder`.
-5. Escribí el cuerpo en Markdown. Agregá `liveUrl` solo si existe un sitio público y `repoUrl` únicamente para proyectos propios con repositorio público.
+5. Escribí el cuerpo en Markdown. Agregá `liveUrl` solo si existe un sitio público. Para un proyecto propio con repositorio público, indicá `isOwnProject: true` y `repoUrl`; en proyectos de clientes, omití esos campos.
 6. Corré `npm run check` y `npm run build`. La colección generará `/proyectos/<slug>` sin agregar rutas a mano.
 
-Para destacar un proyecto en la Home, usá `featured: true`. Publicá únicamente datos confirmados; mientras falten capturas o fotos se usan los placeholders de la especificación.
+Para destacar un proyecto en la Home, usá `featured: true` (normalmente solo uno). Dejá los campos opcionales ausentes si no tenés los datos; las URLs vacías no son válidas. Por ejemplo, desde `src/content/proyectos/districo.md`, una imagen en `src/assets/proyectos/districo/cover.png` se referencia como `cover: ../../assets/proyectos/districo/cover.png`; `gallery` es una lista de rutas con el mismo criterio. No coloques imágenes de contenido en `public/`, porque no pasarían por el pipeline local. Publicá únicamente datos confirmados; mientras falten capturas o fotos se usan los placeholders de la especificación.
+
+Para agregar o editar un servicio, usá `src/content/servicios/<slug>.md` con los campos de los ejemplos existentes; `relatedProject: districo` es opcional y debe apuntar a un proyecto existente. Los archivos `.md` van directamente en la carpeta de su colección.
 
 ## Rate limit de contacto en Cloudflare
 
@@ -179,7 +199,6 @@ Referencia: [crear una regla de rate limiting en Cloudflare](https://developers.
 
 ## Pendientes de fases siguientes
 
-- Content Collections y páginas internas (Fase 4), incluida la selección de DISTRICO desde la colección.
 - Formulario, API y eventos de analítica (Fase 5).
 - SEO, JSON-LD, `robots.txt`, headers, OG y GA4 condicional con Partytown (Fase 6).
 - QA de rendimiento, accesibilidad y navegadores (Fase 7).

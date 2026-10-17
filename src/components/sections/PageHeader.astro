@@ -1,0 +1,30 @@
+---
+import Container from '@/components/ui/Container.astro';
+import Button from '@/components/ui/Button.astro';
+import { contact } from '@/data/site';
+
+interface Props { title: string; lead?: string; eyebrow?: string; appointment?: boolean }
+const { title, lead, eyebrow, appointment = false } = Astro.props;
+---
+
+<section class="page-header" data-hero data-theme="dark" aria-labelledby="page-title">
+  <Container>
+    <div class="page-header__content">
+      {eyebrow && <p class="eyebrow" data-reveal>{eyebrow}</p>}
+      <h1 id="page-title" data-reveal>{title}</h1>
+      {lead && <p class="text-lead" data-reveal>{lead}</p>}
+      {Astro.slots.has('badges') && <div class="page-header__badges" data-reveal><slot name="badges" /></div>}
+      {appointment && <div data-reveal><Button href={contact.appointmentUrl} target={contact.calendlyUrl ? '_blank' : undefined} arrow>Agendar una llamada</Button></div>}
+      <slot />
+    </div>
+  </Container>
+</section>
+
+<style>
+  .page-header { position: relative; isolation: isolate; overflow: hidden; padding-block: 9rem 6rem; background: var(--canvas); color: var(--fg); }
+  .page-header::before { content: ''; position: absolute; z-index: -1; inset: 0; pointer-events: none; background-image: linear-gradient(rgb(148 163 184 / .07) 1px, transparent 1px), linear-gradient(90deg, rgb(148 163 184 / .07) 1px, transparent 1px); background-size: 64px 64px; mask-image: radial-gradient(ellipse 70% 80% at 50% 0%, #000 40%, transparent 100%); }
+  .page-header__content { display: grid; justify-items: start; gap: 1.5rem; max-width: 56rem; }
+  h1 { max-width: 18ch; overflow-wrap: break-word; }
+  .page-header__badges { display: flex; flex-wrap: wrap; gap: .5rem; }
+  @media (width >= 48rem) { .page-header { padding-block: 11rem 8rem; } }
+</style>
