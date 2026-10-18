@@ -21,7 +21,9 @@ const relatedProject = data.relatedProject ? await getEntry(data.relatedProject)
 if (data.relatedProject && !relatedProject) throw new Error(`No existe el proyecto relacionado de ${service.id}.`);
 ---
 
-<BaseLayout title={data.seoTitle} description={data.seoDescription} hasHero>
+<BaseLayout title={data.seoTitle} description={data.seoDescription}
+  breadcrumbs={[{ name: data.navTitle, path: `/servicios/${service.id}` }]}
+  service={{ name: data.headline, serviceType: data.title, description: data.seoDescription }} hasHero>
   <PageHeader eyebrow="Servicios" title={data.headline} lead={data.lead} appointment />
   <section class="section-space audience" aria-labelledby="audience-title">
     <Container><div class="audience-grid"><SectionHeading id="audience-title" title="Para quién es" reveal /><p class="text-lead" data-reveal>{data.audience}</p></div></Container>

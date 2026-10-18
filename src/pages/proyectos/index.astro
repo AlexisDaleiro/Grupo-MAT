@@ -10,7 +10,7 @@ import { byOrder } from '@/lib/content';
 const projects = (await getCollection('proyectos')).sort(byOrder);
 ---
 
-<BaseLayout title="Proyectos · Grupo MAT" description="Lo que estamos construyendo con nuestros clientes." hasHero>
+<BaseLayout title="Proyectos · Grupo MAT" description="Lo que estamos construyendo con nuestros clientes." breadcrumbs={[{ name: 'Proyectos', path: '/proyectos' }]} hasHero>
   <PageHeader title="Proyectos" lead="Lo que estamos construyendo con nuestros clientes." />
   <section class="section-space" aria-labelledby="project-list-title">
     <Container>

@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { contactSchema, contactErrors } from '@/lib/contact-schema';
 import type { ContactData } from '@/lib/contact-schema';
+import { securityHeaders } from '@/lib/security-headers';
 
 export interface ContactRuntime {
   development: boolean;
@@ -19,7 +20,7 @@ const labels = {
 function reply(status: number, body: object, headers?: Record<string, string>) {
   return new Response(JSON.stringify(body), { status, headers: {
     'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store',
-    'X-Content-Type-Options': 'nosniff', ...headers,
+    ...securityHeaders, ...headers,
   } });
 }
 

@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Grupo MAT · Software a medida</title>
+  <desc id="desc">Software a medida para empresas que venden a empresas. E-commerce B2B, landing pages y automatizaciones.</desc>
+  <defs>
+    <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M60 0H0V60" fill="none" stroke="#94a3b8" stroke-opacity=".09"/>
+    </pattern>
+    <radialGradient id="glow" cx="50%" cy="0%" r="80%">
+      <stop stop-color="#0284c7" stop-opacity=".28"/>
+      <stop offset="1" stop-color="#0f172a" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop stop-color="#38bdf8"/><stop offset="1" stop-color="#0284c7"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="#0f172a"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+  <g text-anchor="middle" font-family="Geist Variable, Arial, sans-serif" fill="#f8fafc">
+    <text x="600" y="100" font-size="38" letter-spacing="-.76"><tspan font-weight="500">Grupo </tspan><tspan font-weight="700">MAT</tspan></text>
+    <text x="600" y="182" font-family="Geist Mono Variable, monospace" font-size="13" letter-spacing="2.8" fill="#38bdf8">AGENCIA DE SOFTWARE B2B · URUGUAY</text>
+    <text x="600" y="284" font-size="76" font-weight="600" letter-spacing="-3">Software a medida</text>
+    <g fill="url(#accent)" font-size="66" font-weight="600" letter-spacing="-2.6">
+      <text x="600" y="366">para empresas que</text>
+      <text x="600" y="440">venden a empresas.</text>
+    </g>
+    <path d="M552 502H648" stroke="#0284c7" stroke-width="2"/>
+    <text x="600" y="554" font-size="21" fill="#94a3b8">E-commerce B2B · Landing pages · Automatizaciones</text>
+  </g>
+</svg>

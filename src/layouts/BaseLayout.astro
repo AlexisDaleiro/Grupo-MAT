@@ -6,9 +6,14 @@ import SkipLink from '@/components/layout/SkipLink.astro';
 import Nav from '@/components/layout/Nav.astro';
 import Footer from '@/components/layout/Footer.astro';
 import WhatsAppButton from '@/components/layout/WhatsAppButton.astro';
+import Analytics from '@/components/layout/Analytics.astro';
+import type { BreadcrumbItem, SeoImage, ServiceMetadata } from '@/lib/seo';
 
-interface Props { title?: string; description?: string; image?: string; hasHero?: boolean }
-const { title, description, image, hasHero = false } = Astro.props;
+interface Props {
+  title?: string; description?: string; image?: SeoImage; hasHero?: boolean;
+  canonical?: string; breadcrumbs?: readonly BreadcrumbItem[]; service?: ServiceMetadata; noindex?: boolean;
+}
+const { title, description, image, canonical, breadcrumbs, service, noindex, hasHero = false } = Astro.props;
 ---
 
 <!doctype html>
@@ -41,7 +46,8 @@ const { title, description, image, hasHero = false } = Astro.props;
     </script>
     <link rel="preload" href={geistLatin} as="font" type="font/woff2" crossorigin />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <Seo title={title} description={description} image={image} />
+    <Seo title={title} description={description} image={image} canonical={canonical} breadcrumbs={breadcrumbs} service={service} noindex={noindex} />
+    <Analytics />
   </head>
   <body>
     <SkipLink />

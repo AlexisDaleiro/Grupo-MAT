@@ -5,6 +5,6 @@ import Button from '@/components/ui/Button.astro';
 Astro.response.status = 404;
 ---
 
-<BaseLayout title="Página no encontrada · Grupo MAT" description="Puede que el enlace esté roto o que la página se haya movido." hasHero>
+<BaseLayout title="Página no encontrada · Grupo MAT" description="Puede que el enlace esté roto o que la página se haya movido." canonical="/404/" breadcrumbs={[{ name: 'Página no encontrada', path: '/404/' }]} noindex hasHero>
   <PageHeader title="Esta página no existe." lead="Puede que el enlace esté roto o que la página se haya movido."><Button href="/" arrow>Volver al inicio</Button></PageHeader>
 </BaseLayout>

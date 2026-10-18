@@ -2,7 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import type { GetStaticPaths } from 'astro';
-import { Image } from 'astro:assets';
+import { Image, getImage } from 'astro:assets';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import PageHeader from '@/components/sections/PageHeader.astro';
 import Container from '@/components/ui/Container.astro';
@@ -18,6 +18,13 @@ interface Props { project: CollectionEntry<'proyectos'> }
 const { project } = Astro.props;
 const { data } = project;
 const { Content } = await render(project);
+// PNG para compartir en redes; cover y galería de la página conservan AVIF/WebP.
+const socialScale = data.cover ? Math.min(1, data.cover.width / 1200, data.cover.height / 630) : 1;
+const socialWidth = Math.max(1, Math.floor(1200 * socialScale));
+const socialHeight = Math.max(1, Math.floor(630 * socialScale));
+// Astro no rasteriza SVG con getImage; en ese caso se comparte la imagen de marca.
+const socialCover = data.cover && data.cover.format !== 'svg' ? await getImage({ src: data.cover, width: socialWidth, height: socialHeight, format: 'png', fit: 'cover' }) : undefined;
+const socialImage = socialCover ? { src: socialCover.src, width: socialWidth, height: socialHeight, alt: `Proyecto ${data.title} · Grupo MAT` } : undefined;
 const metadata = [
   ['Cliente', data.client], ['Rubro', data.industry], ['Servicio', data.services.join(' · ')],
   ['Stack', data.stack.join(' · ')], ['Integraciones', data.integrations.join(' · ')],
@@ -25,7 +32,8 @@ const metadata = [
 ].filter(([, value]) => Boolean(value));
 ---
 
-<BaseLayout title={data.seoTitle} description={data.seoDescription} image={data.cover?.src} hasHero>
+<BaseLayout title={data.seoTitle} description={data.seoDescription} image={socialImage}
+  breadcrumbs={[{ name: 'Proyectos', path: '/proyectos' }, { name: data.title, path: `/proyectos/${project.id}` }]} hasHero>
   <PageHeader title={data.title} lead={data.summary}>
     <Fragment slot="badges"><Badge variant="status">{projectStatus(data.status)}</Badge>{data.services.map((service) => <Badge>{service}</Badge>)}</Fragment>
   </PageHeader>

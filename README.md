@@ -4,7 +4,7 @@ Sitio de Grupo MAT, agencia de software B2B de Uruguay. Astro con generación es
 
 ## Estado
 
-Fase 5: formulario, API y eventos de analítica. La Home y las páginas internas comparten el formulario funcional. Las páginas siguen siendo estáticas; solo `/api/contact` se ejecuta por solicitud. GA4 y Partytown se conectan en la Fase 6, con aprobación entre fases.
+Fase 6: SEO, datos estructurados, imagen para compartir y GA4 condicional con Partytown. La Home y las páginas internas comparten el formulario funcional. Las páginas siguen siendo estáticas; solo `/api/contact` se ejecuta por solicitud. El QA final corresponde a la Fase 7, con aprobación entre fases.
 
 ## Desarrollo local
 
@@ -47,7 +47,7 @@ Los componentes están en `src/components/ui/` y el toggle en `src/components/la
 
 ## Layout y movimiento
 
-`BaseLayout` acepta `title`, `description`, `image` y `hasHero`. Cuando la página comienza con una banda oscura, pasá `hasHero` y marcá la banda con `data-hero data-theme="dark"`; así el nav ya tiene el tema correcto antes de cargar los scripts. Sin hero, el contenido deja 64px para el nav fijo.
+`BaseLayout` acepta `title`, `description`, `image` (`src`, dimensiones y `alt`), `canonical`, `breadcrumbs`, `service`, `noindex` y `hasHero`. Cuando la página comienza con una banda oscura, pasá `hasHero` y marcá la banda con `data-hero data-theme="dark"`; así el nav ya tiene el tema correcto antes de cargar los scripts. Sin hero, el contenido deja 64px para el nav fijo.
 
 La navegación usa los links de `src/data/site.ts`. El nav cambia a cristal después de 8px y observa el hero con un offset de 64px. Las bandas mantienen sus tokens oscuros aunque el resto de la página esté en claro. El footer muestra únicamente los canales y redes configurados; Calendly sin URL usa `/contacto` en el CTA del nav.
 
@@ -64,9 +64,9 @@ La navegación usa los links de `src/data/site.ts`. El nav cambia a cristal desp
 
 El botón de WhatsApp aparece al pasar el hero y se oculta con el menú, CTA final o footer visibles. No se renderiza si el número público está vacío. El spotlight se activa solo con mouse fino, hover y sin reduced motion. No hay ClientRouter ni listeners de navegación de View Transitions.
 
-`Seo` contiene los metadatos base y admite una imagen real opcional. Las rutas internas ya reciben los títulos y descripciones de su contenido. JSON-LD, imagen OG, analítica y la revisión final de SEO quedan para la Fase 6.
+`Seo` genera los metadatos, canonical, Open Graph, Twitter Card y JSON-LD. Las rutas internas reciben los títulos y descripciones de su contenido. La imagen de marca es el fallback cuando no existe una portada de proyecto apta para compartir.
 
-Partytown se activa solo cuando existe `PUBLIC_GA_ID`, para evitar registrar un worker de analítica que todavía no se usa. La configuración consulta únicamente variables públicas con el `loadEnv` de Vite que ya incluye Astro, sin agregar dependencias. La inyección de GA4 sigue pendiente de la Fase 6.
+Partytown y los scripts de GA4 se incluyen solo cuando existe `PUBLIC_GA_ID` después de quitar espacios. La configuración consulta únicamente variables públicas con el `loadEnv` de Vite que ya incluye Astro, sin agregar dependencias. Usa `forward: ['dataLayer.push', 'gtag']`; `Analytics.astro` inicializa GA4 con scripts `text/partytown`.
 
 ### Verificación de la Fase 2
 
@@ -122,7 +122,7 @@ Tras validar, un honeypot con cualquier valor responde éxito sin leer secretos,
 
 **Adaptación de Astro 5:** su módulo `astro:env/server` valida anticipadamente los secretos declarados como obligatorios, incluso usando `getSecret()`. Por eso key, destinatario y remitente admiten ausencia en el schema, y la API exige los valores necesarios al momento de enviar. Así funcionan el desarrollo sin credenciales, la validación y el honeypot sin producir errores de carga del módulo. El destinatario sigue siendo obligatorio para un envío real.
 
-`track()` es seguro si `gtag` no existe o falla. El módulo global delega clicks de WhatsApp y Calendly, incluidos links de islas. Solo el éxito del formulario emite `generate_lead`, con el servicio validado; el honeypot no lo emite. No se envían nombres, empresas, emails, mensajes ni URLs a analítica. GA4 todavía no se inyecta.
+`track()` es seguro si `gtag` no existe o falla. El módulo global delega clicks de WhatsApp y Calendly, incluidos links de islas. Solo el éxito del formulario emite `generate_lead`, con el servicio validado; el honeypot no lo emite. Los eventos propios no incluyen nombres, empresas, emails, mensajes ni URLs. La Fase 6 conecta estos eventos con GA4 cuando está configurado.
 
 Referencias: [endpoints de Astro 5](https://v5.docs.astro.build/en/guides/endpoints/), [getSecret](https://v5.docs.astro.build/en/reference/modules/astro-env/), [Zod](https://zod.dev/api), [AnimatePresence](https://motion.dev/docs/react-animate-presence) y [API REST de Resend](https://resend.com/docs/api-reference/emails/send-email).
 
@@ -133,6 +133,30 @@ Referencias: [endpoints de Astro 5](https://v5.docs.astro.build/en/guides/endpoi
 Pasaron 44 casos de API con el proveedor simulado y 10 casos de analítica: límites, validación, Origin, honeypot, secretos ausentes, escape HTML, fallas y respuestas del proveedor, clicks y ausencia de `gtag`. El endpoint compilado se verificó en Pages local; el servidor de desarrollo confirmó el log y la respuesta de éxito sin key. No se enviaron emails reales.
 
 Chrome 155: Home en 360, 768, 1024 y 1440px con ambos temas, más el formulario de contacto sobre fondo claro en esos cuatro anchos. Se verificaron hidratación diferida, validación, foco, anuncios, bloqueo de envíos duplicados, reintentos, conservación de valores, estados y alternativa sin JavaScript. Los cambios a error y éxito dieron **CLS 0** en mobile y desktop. El JS inicial de desktop, sin GA y antes de hidratar islas, fue de **55.949 bytes gzip**, incluidos los scripts inline. Capturas, scripts y reportes quedan fuera del repo. La entrega real por Resend y la regla de Cloudflare requieren configurar el entorno de producción; Lighthouse, axe y otros navegadores siguen para la Fase 7.
+
+## SEO, analítica y entrega de la Fase 6
+
+`src/lib/seo.ts` centraliza las URLs canónicas y el JSON-LD, sin dependencias nuevas. Las URLs de páginas terminan en `/` y no incluyen query ni fragmento. `Seo.astro` genera una única descripción, canonical, Open Graph con `es_UY` y Twitter Card con imagen grande, dimensiones y texto alternativo. Los títulos y descripciones de servicios y proyectos vienen de sus colecciones. La 404 tiene `noindex, follow` y canonical fijo a `/404/`, incluso cuando Pages la sirve para una ruta desconocida.
+
+La Home incluye `Organization` y `WebSite`; los servicios agregan `Service` y todas las páginas internas, `BreadcrumbList`. Los servicios tienen dos niveles (Inicio → servicio), porque no existe una página de índice de servicios; el detalle de proyecto agrega el nivel Proyectos. Solo se publican datos confirmados: Uruguay como área, teléfono si WhatsApp está configurado y redes si existen sus URLs. El JSON-LD escapa `<` y separadores Unicode antes de incorporarse al HTML.
+
+`public/og-default.png` mide **1200 × 630** y `public/logo.png`, **600 × 180**. Ambos usan la marca tipográfica, Geist y colores del sitio. Los SVG editables están en `src/assets/brand/`; los PNG se exportaron con las fuentes locales de Fontsource. Para volver a exportarlos, cargá Geist Variable y Geist Mono Variable, respetá las dimensiones del SVG y exportá a PNG con escala 1. Las redes reciben los PNG, sin depender del soporte de SVG. Una portada raster de proyecto se recorta con `getImage()` a proporción 1200:630 sin ampliar, con dimensiones OG acordes al archivo; una portada SVG usa la imagen de marca para compartir.
+
+Sitemap genera `sitemap-index.xml` y sus archivos de páginas. `robots.txt` y el link del head apuntan al índice; la 404 queda excluida. Al confirmar el dominio, actualizá **tanto `site` en `astro.config.mjs` como la URL del sitemap en `public/robots.txt`**, y volvé a compilar.
+
+`Analytics.astro` configura GA4 en Partytown únicamente si hay ID. Desactiva Google Signals y personalización publicitaria, y envía la URL inicial y el referrer sin query ni fragmento. Los tres eventos propios conservan los parámetros de la Fase 5. Al crear la propiedad, revisá sus opciones de medición mejorada antes de activarla. La verificación local usa un tag simulado; la recepción en la propiedad real se confirma después de configurar el ID y publicar.
+
+`public/_headers` aplica los cuatro headers de seguridad solicitados y caché de un año con `immutable` a `/_astro/*`. Cloudflare no aplica ese archivo a respuestas de Functions: `security-headers.ts` agrega los mismos valores a todas las respuestas propias de la API, además de `no-store`. La protección CSRF previa de Astro conserva su comportamiento. No hay CSP en esta versión, como indica la especificación.
+
+Referencias: [Sitemap](https://docs.astro.build/en/guides/integrations-guide/sitemap/), [Partytown en Astro 5](https://v5.docs.astro.build/en/guides/integrations-guide/partytown/), [GA4 en Partytown](https://partytown.qwik.dev/google-tag-manager/), [configuración de GA4](https://developers.google.com/analytics/devguides/collection/ga4/reference/config), [Organization](https://developers.google.com/search/docs/appearance/structured-data/organization), [BreadcrumbList](https://developers.google.com/search/docs/appearance/structured-data/breadcrumb), [Service](https://schema.org/Service) y [headers de Pages](https://developers.cloudflare.com/pages/configuration/headers/).
+
+### Verificación de la Fase 6
+
+`npx astro check`: 55 archivos, sin errores, warnings ni hints de código. `npm run build`: correcto, con nueve páginas estáticas y la API por solicitud. Persisten los avisos de comentarios de Zod descritos en la Fase 5.
+
+Chrome 155 sobre Pages local: las nueve páginas tienen un único título, descripción y canonical, tags OG/Twitter coherentes, un h1 y JSON-LD parseable con los tipos y campos previstos. Se comprobaron el sitemap XML con ocho URLs (sin 404 ni API), robots, estado 404 para rutas desconocidas, PNG y sus dimensiones, headers estáticos, caché de assets y headers de la API. Sin ID no hay scripts ni archivos de Partytown; el JS inicial de desktop sigue en **55.949 bytes gzip** sin islas hidratadas.
+
+Con un ID sintético y un tag simulado, Partytown ejecutó el script en un worker y recibió `gtag` y `dataLayer.push`. Los tres eventos llegaron una vez y `generate_lead` incluyó solo `servicio`, sin datos del formulario. Se verificó la portada raster temporal con las dimensiones declaradas; la fixture se retiró y el build final volvió a los placeholders. Los 44 casos de API también pasaron tras agregar headers. No hubo tráfico real a Google ni emails reales. La validación de datos estructurados fue local; los validadores públicos y la propiedad real se revisan con la URL publicada. Reportes y scripts quedan fuera del repo.
 
 ### Compatibilidad con Cloudflare Pages
 
@@ -182,7 +206,7 @@ Referencia: [restricciones del dominio de prueba de Resend](https://resend.com/d
 3. Seleccioná Node.js 22.22 o posterior compatible con `package.json` en el entorno de build (por ejemplo, mediante la variable `NODE_VERSION`). Instalá las dependencias con el lockfile (`npm ci`).
 4. En **Settings → Variables and Secrets**, cargá `RESEND_API_KEY`, `CONTACT_TO_EMAIL` y, si corresponde, `CONTACT_FROM_EMAIL` como secretos del runtime de Pages Functions. Configuralos para producción y para los previews que necesiten enviar emails. Las variables `PUBLIC_*` que uses deben estar disponibles al compilar; sus cambios requieren un nuevo build.
 5. `/api/contact` lleva `prerender = false`; las demás páginas son estáticas. Habilitá `nodejs_compat` para Pages Functions y elegí una fecha de compatibilidad vigente en la configuración del proyecto, tanto en producción como en previews.
-6. Conservá `https://grupo-mat.pages.dev` como `site` provisional. Cambialo en `astro.config.mjs` cuando haya un dominio propio confirmado.
+6. Conservá `https://grupo-mat.pages.dev` como `site` provisional. Cuando haya un dominio propio confirmado, cambialo en `astro.config.mjs` y en `public/robots.txt`, y volvé a compilar.
 
 Los valores de los secretos no se escriben en `astro.config.mjs`, el README ni otros archivos versionados. El endpoint de contacto está implementado; esta fase no configura ni publica un proyecto de Cloudflare.
 
@@ -223,7 +247,6 @@ Referencia: [crear una regla de rate limiting en Cloudflare](https://developers.
 
 ## Pendientes de fases siguientes
 
-- SEO, JSON-LD, `robots.txt`, headers, OG y GA4 condicional con Partytown (Fase 6).
 - QA de rendimiento, accesibilidad y navegadores (Fase 7).
 - Evaluar una CSP después de la v1; queda pendiente por la combinación de Partytown, GA y scripts inline.
 

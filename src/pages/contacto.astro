@@ -8,7 +8,7 @@ import ContactFormBlock from '@/components/ui/ContactFormBlock.astro';
 import { contact } from '@/data/site';
 ---
 
-<BaseLayout title="Contacto · Grupo MAT" description="Elegí el canal que te quede más cómodo. La primera llamada no tiene costo." hasHero>
+<BaseLayout title="Contacto · Grupo MAT" description="Elegí el canal que te quede más cómodo. La primera llamada no tiene costo." breadcrumbs={[{ name: 'Contacto', path: '/contacto' }]} hasHero>
   <PageHeader title="Hablemos de tu proyecto" lead="Elegí el canal que te quede más cómodo. La primera llamada no tiene costo." />
   <section class="contact-channels section-space" aria-labelledby="channels-title">
     <Container>

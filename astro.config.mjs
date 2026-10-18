@@ -64,7 +64,14 @@ export default defineConfig({
     },
   },
 
-  integrations: [react(), sitemap(), ...(publicEnvironment.PUBLIC_GA_ID?.trim() ? [partytown()] : []), icon()],
+  integrations: [
+    react(),
+    sitemap({ filter: (page) => !/^\/404(?:\/|\.html)?$/u.test(new URL(page).pathname) }),
+    ...(publicEnvironment.PUBLIC_GA_ID?.trim()
+      ? [partytown({ config: { forward: ['dataLayer.push', 'gtag'] } })]
+      : []),
+    icon(),
+  ],
 
   vite: {
     plugins: [tailwindcss()],
