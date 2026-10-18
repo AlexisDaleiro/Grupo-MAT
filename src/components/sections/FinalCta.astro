@@ -1,7 +1,7 @@
 ---
 import { Icon } from 'astro-icon/components';
 import Container from '@/components/ui/Container.astro';
-import ContactFormPlaceholder from '@/components/ui/ContactFormPlaceholder.astro';
+import ContactFormBlock from '@/components/ui/ContactFormBlock.astro';
 import { contact } from '@/data/site';
 ---
 
@@ -16,7 +16,7 @@ import { contact } from '@/data/site';
           {contact.whatsappUrl && <a href={contact.whatsappUrl} target="_blank" rel="noopener"><Icon name="simple-icons:whatsapp" size={22} aria-hidden="true" /><span><strong>Escribinos por WhatsApp</strong><span>{contact.whatsappLabel}</span></span><Icon name="lucide:arrow-up-right" size={18} aria-hidden="true" /></a>}
         </div>
       </div>
-      <ContactFormPlaceholder data-reveal />
+      <ContactFormBlock />
     </div>
   </Container>
 </section>

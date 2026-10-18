@@ -2,6 +2,7 @@
 
 interface Window {
   __motionReady?: boolean;
+  gtag?: (...args: unknown[]) => void;
 }
 
 interface WindowEventMap {

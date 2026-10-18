@@ -4,7 +4,7 @@ Sitio de Grupo MAT, agencia de software B2B de Uruguay. Astro con generación es
 
 ## Estado
 
-Fase 4: contenido y páginas internas. Están implementados la Home, las colecciones de servicios y proyectos, las páginas de servicio, listado y detalle de proyectos, contacto, privacidad y 404. El formulario sigue siendo un placeholder estático hasta la Fase 5, con aprobación entre fases.
+Fase 5: formulario, API y eventos de analítica. La Home y las páginas internas comparten el formulario funcional. Las páginas siguen siendo estáticas; solo `/api/contact` se ejecuta por solicitud. GA4 y Partytown se conectan en la Fase 6, con aprobación entre fases.
 
 ## Desarrollo local
 
@@ -51,7 +51,7 @@ Los componentes están en `src/components/ui/` y el toggle en `src/components/la
 
 La navegación usa los links de `src/data/site.ts`. El nav cambia a cristal después de 8px y observa el hero con un offset de 64px. Las bandas mantienen sus tokens oscuros aunque el resto de la página esté en claro. El footer muestra únicamente los canales y redes configurados; Calendly sin URL usa `/contacto` en el CTA del nav.
 
-`MobileMenu` es la única isla de esta fase, con `client:media="(max-width: 1023px)"`. React y Motion se descargan cuando se hidrata en mobile; desktop conserva HTML y scripts vanilla. Usa un diálogo nativo, focus trap, cierre con Escape o enlaces, restauración de foco y bloqueo de scroll hasta finalizar la salida. Sin JavaScript, queda disponible una navegación móvil con `details` nativo. Motion usa `LazyMotion`, `domAnimation`, componentes `m.*` desde `motion/react-m` y `reducedMotion="user"`, con tweens sin rebote.
+`MobileMenu` usa `client:media="(max-width: 1023px)"`; `ContactForm` usa `client:visible`. En desktop, React y Motion no se descargan hasta que el formulario entra en pantalla. El menú usa un diálogo nativo, focus trap, cierre con Escape o enlaces, restauración de foco y bloqueo de scroll hasta finalizar la salida. Sin JavaScript, queda disponible una navegación móvil con `details` nativo. Ambas islas usan `LazyMotion`, `domAnimation`, componentes `m.*` desde `motion/react-m` y `reducedMotion="user"`, con tweens sin rebote.
 
 `src/scripts/motion.ts` se importa una vez desde el layout. Lenis se sincroniza con el ticker de GSAP y ScrollTrigger, con touch nativo. En Lenis 1.3.27, `scrollTo` ya descuenta `scroll-margin-top`; por eso `anchors` usa offset adicional cero y los destinos conservan los 80px del CSS. Los reveals limpian transform, opacity, filter y will-change al terminar. Si vence el failsafe de 3 segundos, la carga tardía del módulo no vuelve a ocultar contenido ya visible. Al activar reduced motion se destruye Lenis y todo queda visible; al desactivarlo se reinicia el scroll sin repetir reveals.
 
@@ -82,7 +82,7 @@ El hero usa entradas CSS con los delays de la especificación, grid y glow de fo
 
 La franja de tecnologías usa dos listas iguales y un ciclo CSS de 40 segundos, con pausa en hover. La copia está oculta para tecnologías asistivas; con reduced motion se muestra una sola lista estática. La FAQ usa `details`/`summary` y mejora progresivamente con `::details-content`; sin soporte abre de forma nativa.
 
-Desde la Fase 4, DISTRICO se selecciona desde Content Collections con `featured: true`. El CTA final muestra una vista estática del formulario, sin campos editables ni envío; ofrece WhatsApp mientras se implementa `ContactForm` en la Fase 5. Calendly y redes se muestran solo si tienen URL. Los links a servicios, proyectos, contacto y privacidad ya tienen sus páginas.
+Desde la Fase 4, DISTRICO se selecciona desde Content Collections con `featured: true`. El CTA final comparte `ContactForm` con la página de contacto. Calendly y redes se muestran solo si tienen URL. Los links a servicios, proyectos, contacto y privacidad ya tienen sus páginas.
 
 Referencias de implementación: [componentes Astro](https://docs.astro.build/en/basics/astro-components/), [GSAP matchMedia](https://gsap.com/docs/v3/GSAP/gsap.matchMedia()/) y [ScrollTrigger](https://gsap.com/docs/v3/Plugins/ScrollTrigger/).
 
@@ -100,7 +100,7 @@ Sin GA y sin islas hidratadas, el JS inicial de desktop fue de **55.068 bytes gz
 
 Cover y galería locales usan `image()` y `Picture`, con AVIF/WebP, dimensiones explícitas y carga diferida. El logo es opcional. Sin imágenes se usa `ProjectPlaceholder`. Los botones externos se muestran solo si existe la URL; `repoUrl` requiere además `isOwnProject: true`, validado por el schema para evitar publicar repositorios de clientes.
 
-Contacto ofrece únicamente los canales configurados y un anchor a `#formulario`, cuyo destino recibe foco también con navegación nativa y sin JavaScript. El placeholder se comparte con el CTA de la Home y no permite ingresar ni enviar datos. Privacidad incluye la nota HTML de revisión legal; su fecha corresponde a esta versión del texto, no cambia con cada build. `404.astro` genera `404.html` para las rutas inexistentes de Pages. La URL directa `/404` se sirve como archivo estático; el estado HTTP 404 se verifica solicitando una ruta inexistente, según el comportamiento de [Cloudflare Pages](https://developers.cloudflare.com/pages/configuration/serving-pages/).
+Contacto ofrece únicamente los canales configurados y un anchor a `#formulario`, cuyo destino recibe foco también con navegación nativa y sin JavaScript. El placeholder de la Fase 4 fue reemplazado por el formulario en la Fase 5. Privacidad incluye la nota HTML de revisión legal; su fecha corresponde a esta versión del texto, no cambia con cada build. `404.astro` genera `404.html` para las rutas inexistentes de Pages. La URL directa `/404` se sirve como archivo estático; el estado HTTP 404 se verifica solicitando una ruta inexistente, según el comportamiento de [Cloudflare Pages](https://developers.cloudflare.com/pages/configuration/serving-pages/).
 
 Referencias: [Content Collections de Astro 5](https://v5.docs.astro.build/en/guides/content-collections/), [API de contenido](https://v5.docs.astro.build/en/reference/modules/astro-content/) e [imágenes](https://v5.docs.astro.build/en/guides/images/).
 
@@ -110,6 +110,30 @@ Referencias: [Content Collections de Astro 5](https://v5.docs.astro.build/en/gui
 
 Chrome 155: 72 escenarios (nueve rutas × cuatro anchos de 360, 768, 1024 y 1440px × claro/oscuro), sin overflow horizontal ni errores de consola. Se verificaron títulos, contenido, bandas oscuras, referencias, enlaces internos, anchors, ausencia de URLs e imágenes no configuradas, nota de privacidad y respuesta 404 para rutas inexistentes. También se probaron navegación y formulario estático sin JavaScript, reduced motion y reveals con movimiento normal. Capturas, scripts y reportes quedan fuera del repo. La revisión de otros navegadores, Lighthouse y axe sigue para la Fase 7.
 
+## Formulario y API de la Fase 5
+
+`src/lib/contact-schema.ts` define el schema Zod 4 compartido por la isla y el servidor. Valida al salir de cada campo y al enviar, recorta los textos y limita largos y opciones. Las opciones están en `src/data/site.ts`; los presupuestos son provisorios. Los errores tienen espacio reservado, `aria-describedby` y `aria-invalid`; el foco va al primer campo inválido o al mensaje general. Los estados se anuncian con una región `aria-live` estable. La altura del panel se conserva durante las transiciones de `AnimatePresence mode="wait"`, incluida la confirmación de éxito, sin animar dimensiones.
+
+`ContactFormBlock.astro` sirve HTML y CSS desde el servidor y monta la isla con `client:visible`. Los controles quedan deshabilitados hasta hidratar para impedir un POST nativo que exponga datos en una navegación sin JavaScript. El bloque `noscript` ofrece WhatsApp. El formulario completo no recibe un reveal con blur; se animan sus cambios de estado con fade y blur de 4px, desactivado con reduced motion. El envío bloquea intentos simultáneos, permite reintentar tras fallas y conserva los valores. Los tipos de React actuales usan `SubmitEvent`.
+
+`src/pages/api/contact.ts` es la única ruta con `prerender = false`. Lee secretos mediante `getSecret()` y delega en `src/lib/contact-handler.ts`. La API acepta JSON, compara el Origin presente con el origen de la solicitud y lee el body como stream, con un límite de **10.240 bytes** incluso sin Content-Length. Devuelve `400` con errores por campo, `403` por origen ajeno, `405` por método, `413` por tamaño y `415` por tipo de contenido. Astro conserva su protección CSRF nativa: un POST de tipo formulario sin Origin propio puede recibir `403` antes del handler.
+
+Tras validar, un honeypot con cualquier valor responde éxito sin leer secretos, enviar ni registrar el payload. En desarrollo sin key, se registra el payload validado y se responde éxito. En producción sin key, o con key pero sin destinatario válido, se devuelve `500`. El envío usa `fetch` a Resend, con `reply_to`, HTML escapado y texto plano; acepta únicamente una respuesta exitosa con ID. Las fallas de proveedor o red responden `502`. Los errores de producción no registran datos personales, credenciales ni cuerpos de respuesta del proveedor. El timeout es de 10 segundos al proveedor y 20 segundos en el navegador; las respuestas llevan `Cache-Control: no-store`.
+
+**Adaptación de Astro 5:** su módulo `astro:env/server` valida anticipadamente los secretos declarados como obligatorios, incluso usando `getSecret()`. Por eso key, destinatario y remitente admiten ausencia en el schema, y la API exige los valores necesarios al momento de enviar. Así funcionan el desarrollo sin credenciales, la validación y el honeypot sin producir errores de carga del módulo. El destinatario sigue siendo obligatorio para un envío real.
+
+`track()` es seguro si `gtag` no existe o falla. El módulo global delega clicks de WhatsApp y Calendly, incluidos links de islas. Solo el éxito del formulario emite `generate_lead`, con el servicio validado; el honeypot no lo emite. No se envían nombres, empresas, emails, mensajes ni URLs a analítica. GA4 todavía no se inyecta.
+
+Referencias: [endpoints de Astro 5](https://v5.docs.astro.build/en/guides/endpoints/), [getSecret](https://v5.docs.astro.build/en/reference/modules/astro-env/), [Zod](https://zod.dev/api), [AnimatePresence](https://motion.dev/docs/react-animate-presence) y [API REST de Resend](https://resend.com/docs/api-reference/emails/send-email).
+
+### Verificación de la Fase 5
+
+`npx astro check`: 52 archivos, sin errores, warnings ni hints. `npm run build`: correcto, con nueve páginas estáticas y `/api/contact` como única ruta por solicitud. Rollup avisa que descarta anotaciones de dos comentarios de Zod 4.6.7; son avisos de la dependencia y no impiden compilar.
+
+Pasaron 44 casos de API con el proveedor simulado y 10 casos de analítica: límites, validación, Origin, honeypot, secretos ausentes, escape HTML, fallas y respuestas del proveedor, clicks y ausencia de `gtag`. El endpoint compilado se verificó en Pages local; el servidor de desarrollo confirmó el log y la respuesta de éxito sin key. No se enviaron emails reales.
+
+Chrome 155: Home en 360, 768, 1024 y 1440px con ambos temas, más el formulario de contacto sobre fondo claro en esos cuatro anchos. Se verificaron hidratación diferida, validación, foco, anuncios, bloqueo de envíos duplicados, reintentos, conservación de valores, estados y alternativa sin JavaScript. Los cambios a error y éxito dieron **CLS 0** en mobile y desktop. El JS inicial de desktop, sin GA y antes de hidratar islas, fue de **55.949 bytes gzip**, incluidos los scripts inline. Capturas, scripts y reportes quedan fuera del repo. La entrega real por Resend y la regla de Cloudflare requieren configurar el entorno de producción; Lighthouse, axe y otros navegadores siguen para la Fase 7.
+
 ### Compatibilidad con Cloudflare Pages
 
 Para conservar el hosting pedido se usa Astro **5.18.2**, `@astrojs/cloudflare` **12.6.13** y `@astrojs/react` **4.4.2**, con versiones fijadas y lockfile. Es una excepción a usar la última versión mayor, acordada con el cliente: el adaptador actual eliminó el soporte de Pages y requiere Cloudflare Workers. TypeScript usa **6.0.3**, la última versión compatible con los peers de `@astrojs/check` **0.9.10** (TypeScript 5 o 6; todavía no admite TypeScript 7). Las demás dependencias se instalan en su última versión estable; Tailwind se mantiene en v4, como pide la especificación.
@@ -118,7 +142,7 @@ El adaptador usa `imageService: 'compile'` para optimizar imágenes durante el b
 
 Referencias: [adaptador compatible con Astro 5](https://v5.docs.astro.build/en/guides/integrations-guide/cloudflare/), [retiro del soporte de Pages en el adaptador actual](https://docs.astro.build/en/guides/integrations-guide/cloudflare/#removed-cloudflare-pages-support).
 
-**Limitación conocida de esta línea:** la auditoría de npm del 17/10/2026 reporta 8 dependencias afectadas (1 crítica, 4 altas, 2 moderadas y 1 baja). Incluye avisos en Astro, el adaptador y sus herramientas transitivas; npm propone versiones mayores para corregirlos, que requieren migrar a Workers. Las páginas actuales son estáticas y todavía no procesan imágenes, pero la compatibilidad con Pages no equivale a una auditoría limpia. Revisá esta limitación antes de publicar o implementar las funciones afectadas. No se aplica `npm audit fix --force` porque alteraría las versiones y el hosting acordados.
+**Limitación conocida de esta línea:** la auditoría de npm del 17/10/2026 reporta 8 dependencias afectadas (1 crítica, 4 altas, 2 moderadas y 1 baja). Incluye avisos en Astro, el adaptador y sus herramientas transitivas; npm propone versiones mayores para corregirlos, que requieren migrar a Workers. Las páginas de contenido son estáticas, las imágenes se procesan durante el build y el endpoint de contacto se ejecuta por solicitud. La compatibilidad con Pages no equivale a una auditoría limpia. Revisá esta limitación antes de publicar o implementar las funciones afectadas. No se aplica `npm audit fix --force` porque alteraría las versiones y el hosting acordados.
 
 ## Variables de entorno
 
@@ -143,7 +167,7 @@ El schema tipado se define con `envField` en `astro.config.mjs`. Los secretos so
 
 Los valores públicos quedan disponibles en el navegador: nunca los uses para secretos. Para activar el número predeterminado de WhatsApp, eliminá su asignación vacía de `.env` o completala con el valor documentado.
 
-La API se implementa en la Fase 5. En desarrollo sin clave de Resend, deberá registrar el payload en la consola y responder con éxito. En producción sin clave, deberá responder con error. No se envían consultas en la Fase 0.
+En desarrollo sin clave de Resend, la API registra el payload validado en la consola y responde con éxito. En producción sin clave, responde con error. Para un envío real, configurá la key y el destinatario; el remitente es opcional y usa el valor de prueba previsto en la especificación si falta.
 
 ### Resend sin dominio verificado
 
@@ -157,10 +181,10 @@ Referencia: [restricciones del dominio de prueba de Resend](https://resend.com/d
 2. Usá la raíz del repositorio como directorio del proyecto, `npm run build` como comando de build y `dist` como directorio de salida.
 3. Seleccioná Node.js 22.22 o posterior compatible con `package.json` en el entorno de build (por ejemplo, mediante la variable `NODE_VERSION`). Instalá las dependencias con el lockfile (`npm ci`).
 4. En **Settings → Variables and Secrets**, cargá `RESEND_API_KEY`, `CONTACT_TO_EMAIL` y, si corresponde, `CONTACT_FROM_EMAIL` como secretos del runtime de Pages Functions. Configuralos para producción y para los previews que necesiten enviar emails. Las variables `PUBLIC_*` que uses deben estar disponibles al compilar; sus cambios requieren un nuevo build.
-5. Cuando se incorpore `/api/contact` en la Fase 5, esa ruta llevará `prerender = false`; las demás páginas seguirán siendo estáticas. Habilitá `nodejs_compat` para Pages Functions y elegí una fecha de compatibilidad vigente en la configuración del proyecto, tanto en producción como en previews.
+5. `/api/contact` lleva `prerender = false`; las demás páginas son estáticas. Habilitá `nodejs_compat` para Pages Functions y elegí una fecha de compatibilidad vigente en la configuración del proyecto, tanto en producción como en previews.
 6. Conservá `https://grupo-mat.pages.dev` como `site` provisional. Cambialo en `astro.config.mjs` cuando haya un dominio propio confirmado.
 
-Los secretos no se escriben en `astro.config.mjs`, el README ni otros archivos versionados. El build de esta fase no implementa todavía el endpoint de contacto. No se configura ni se publica ningún proyecto de Cloudflare desde este repositorio durante la Fase 0.
+Los valores de los secretos no se escriben en `astro.config.mjs`, el README ni otros archivos versionados. El endpoint de contacto está implementado; esta fase no configura ni publica un proyecto de Cloudflare.
 
 Referencia: [desplegar Astro en Cloudflare Pages con Astro 5](https://v5.docs.astro.build/en/guides/deploy/cloudflare/).
 
@@ -181,7 +205,7 @@ Para agregar o editar un servicio, usá `src/content/servicios/<slug>.md` con lo
 
 ## Rate limit de contacto en Cloudflare
 
-La API de contacto se implementa en la Fase 5. El límite se configura en Cloudflare, sin código de rate limiting en la aplicación:
+El límite de la API se configura en Cloudflare, sin código de rate limiting en la aplicación:
 
 1. Seleccioná la zona del dominio del sitio en Cloudflare.
 2. Abrí **Security → WAF → Rate limiting rules** (o **Security rules → Rate limiting rules**, según la interfaz del panel) y creá una regla.
@@ -199,7 +223,6 @@ Referencia: [crear una regla de rate limiting en Cloudflare](https://developers.
 
 ## Pendientes de fases siguientes
 
-- Formulario, API y eventos de analítica (Fase 5).
 - SEO, JSON-LD, `robots.txt`, headers, OG y GA4 condicional con Partytown (Fase 6).
 - QA de rendimiento, accesibilidad y navegadores (Fase 7).
 - Evaluar una CSP después de la v1; queda pendiente por la combinación de Partytown, GA y scripts inline.

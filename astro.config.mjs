@@ -28,6 +28,8 @@ export default defineConfig({
       CONTACT_TO_EMAIL: envField.string({
         context: 'server',
         access: 'secret',
+        // Obligatoria al enviar; la API la valida sin impedir su carga sin credenciales.
+        optional: true,
       }),
       CONTACT_FROM_EMAIL: envField.string({
         context: 'server',

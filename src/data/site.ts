@@ -24,6 +24,13 @@ export const serviceLinks: readonly NavItem[] = [
 
 export const companyLinks = navigation.filter((item) => item.label !== 'Servicios');
 
+// Los rangos de presupuesto son provisorios: el cliente los va a ajustar.
+export const contactOptions = {
+  servicio: ['E-commerce B2B', 'Landing page', 'Automatización', 'Todavía no lo sé'],
+  presupuesto: ['Hasta USD 1.000', 'USD 1.000 – 3.000', 'USD 3.000 – 10.000', 'Más de USD 10.000', 'Todavía no lo sé'],
+  plazo: ['Lo antes posible', 'En 1 a 3 meses', 'En 3 a 6 meses', 'Sin fecha definida'],
+} as const;
+
 function externalUrl(value: string): string | undefined {
   try {
     const url = new URL(value.trim());

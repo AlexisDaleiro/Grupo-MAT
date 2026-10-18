@@ -27,6 +27,7 @@
   --line: #e2e8f0;
   --fg: #1e293b;
   --fg-muted: #475569;
+  --feedback-error: #b91c1c;
   --brand: #0284c7;
   --brand-strong: #0369a1;
   --brand-strong-hover: #075985;
@@ -46,6 +47,7 @@
   --line: rgb(148 163 184 / 0.14);
   --fg: #f8fafc;
   --fg-muted: #94a3b8;
+  --feedback-error: #fca5a5;
   --brand-text: #38bdf8;
   --spot-border: rgb(56 189 248 / 0.55);
   --spot-fill: rgb(2 132 199 / 0.12);
