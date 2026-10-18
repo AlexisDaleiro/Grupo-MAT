@@ -94,6 +94,11 @@
 }
 
 @layer base {
+  :root:not([data-language="en"]) [data-language="en"],
+  :root[data-language="en"] [data-language="es"] {
+    display: none !important;
+  }
+
   html {
     background-color: var(--canvas);
     font-family: var(--font-sans);
@@ -191,9 +196,4 @@
     }
   }
 
-  @media (prefers-reduced-motion: no-preference) {
-    body.theme-transition {
-      transition: background-color 200ms, color 200ms;
-    }
-  }
 }

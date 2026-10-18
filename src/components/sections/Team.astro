@@ -1,4 +1,5 @@
 ---
+import Text from '@/components/ui/Text.astro';
 import { Icon } from 'astro-icon/components';
 import Container from '@/components/ui/Container.astro';
 import SectionHeading from '@/components/ui/SectionHeading.astro';
@@ -14,9 +15,9 @@ import { team } from '@/data/site';
       {team.map((member) => (
         <SpotlightCard class="team-card" data-reveal>
           <Avatar name={member.name} photo={member.photo} size={80} />
-          <div><h3>{member.name}</h3><p class="team-card__role">{member.role}</p></div>
-          <p class="team-card__description">{member.text}</p>
-          {member.linkedin && <a class="team-card__social" href={member.linkedin} target="_blank" rel="noopener" aria-label={`LinkedIn de ${member.name}`}><Icon name="lucide:linkedin" size={20} aria-hidden="true" /></a>}
+          <div><h3>{member.name}</h3><p class="team-card__role"><Text text={member.role} /></p></div>
+          <p class="team-card__description"><Text text={member.text} /></p>
+          {member.linkedin && <a class="team-card__social" href={member.linkedin} target="_blank" rel="noopener" aria-label={`LinkedIn de ${member.name}`} data-label-en={`${member.name} on LinkedIn`}><Icon name="lucide:linkedin" size={20} aria-hidden="true" /></a>}
         </SpotlightCard>
       ))}
     </div>

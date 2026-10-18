@@ -1,4 +1,5 @@
 ---
+import Text from '@/components/ui/Text.astro';
 import Container from '@/components/ui/Container.astro';
 import { getCollection } from 'astro:content';
 import ProjectMedia from '@/components/ui/ProjectMedia.astro';
@@ -20,13 +21,13 @@ const metadata = project ? [
         <div data-project-image><ProjectMedia image={project.data.cover} name={project.data.title} sizes="(min-width: 1024px) 528px, 100vw" /></div>
       </div>
       <div class="project-copy">
-        <p class="eyebrow" data-reveal>Proyecto destacado</p>
-        <div class="project-title" data-reveal><h2 id="project-title">{project.data.title}</h2><Badge variant="status">{projectStatus(project.data.status)}</Badge></div>
-        <p class="text-lead" data-reveal>{project.data.summary}</p>
+        <p class="eyebrow" data-reveal><Text text={"Proyecto destacado"} /></p>
+        <div class="project-title" data-reveal><h2 id="project-title">{project.data.title}</h2><Badge variant="status"><Text text={projectStatus(project.data.status)} /></Badge></div>
+        <p class="text-lead" data-reveal><Text text={project.data.summary} /></p>
         <dl data-reveal>
-          {metadata.map(([label, value]) => <div><dt>{label}:</dt><dd>{value}</dd></div>)}
+          {metadata.map(([label, value]) => <div><dt><Text text={label} />:</dt><dd><Text text={value} /></dd></div>)}
         </dl>
-        <div data-reveal><Button href={`/proyectos/${project.id}`} variant="secondary" arrow>Ver el proyecto</Button></div>
+        <div data-reveal><Button href={`/proyectos/${project.id}`} variant="secondary" arrow><Text text={"Ver el proyecto"} /></Button></div>
       </div>
     </div>
   </Container>

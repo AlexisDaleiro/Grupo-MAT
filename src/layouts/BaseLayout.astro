@@ -17,7 +17,7 @@ const { title, description, image, canonical, breadcrumbs, service, noindex, has
 ---
 
 <!doctype html>
-<html lang="es-UY">
+<html lang="es-UY" data-theme="light" data-language="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -25,17 +25,12 @@ const { title, description, image, canonical, breadcrumbs, service, noindex, has
     <script is:inline>
       (() => {
         const root = document.documentElement;
-        let theme = null;
+        let language = 'es';
         try {
-          theme = localStorage.getItem('theme');
+          if (localStorage.getItem('language') === 'en') language = 'en';
         } catch {}
-        if (theme !== 'light' && theme !== 'dark') {
-          theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-        }
-        root.dataset.theme = theme;
-        document.querySelector('meta[name="theme-color"]')?.setAttribute(
-          'content', theme === 'dark' ? '#582B39' : '#FFF4EE',
-        );
+        root.dataset.language = language;
+        root.lang = language === 'en' ? 'en' : 'es-UY';
         if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
           root.classList.add('motion-ok');
           setTimeout(() => {
@@ -57,6 +52,7 @@ const { title, description, image, canonical, breadcrumbs, service, noindex, has
     </main>
     <Footer />
     <WhatsAppButton />
+    <p class="sr-only" role="status" aria-live="polite" aria-atomic="true" data-language-status></p>
     <script>
       import '@/scripts/nav';
       import '@/scripts/spotlight';

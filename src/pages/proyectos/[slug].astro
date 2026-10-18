@@ -1,7 +1,8 @@
 ---
+import Text from '@/components/ui/Text.astro';
 import { getCollection, render } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
-import type { GetStaticPaths } from 'astro';
+import type { GetStaticPaths, MarkdownInstance } from 'astro';
 import { Image, getImage } from 'astro:assets';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import PageHeader from '@/components/sections/PageHeader.astro';
@@ -18,6 +19,8 @@ interface Props { project: CollectionEntry<'proyectos'> }
 const { project } = Astro.props;
 const { data } = project;
 const { Content } = await render(project);
+const translatedContent: Partial<Record<string, MarkdownInstance<Record<string, never>>>> = import.meta.glob<MarkdownInstance<Record<string, never>>>('../../content/translations/proyectos/*.md', { eager: true });
+const EnglishContent = translatedContent[`../../content/translations/proyectos/${project.id}.md`]?.Content;
 // PNG para compartir en redes; cover y galería de la página conservan AVIF/WebP.
 const socialScale = data.cover ? Math.min(1, data.cover.width / 1200, data.cover.height / 630) : 1;
 const socialWidth = Math.max(1, Math.floor(1200 * socialScale));
@@ -35,27 +38,28 @@ const metadata = [
 <BaseLayout title={data.seoTitle} description={data.seoDescription} image={socialImage}
   breadcrumbs={[{ name: 'Proyectos', path: '/proyectos' }, { name: data.title, path: `/proyectos/${project.id}` }]} hasHero>
   <PageHeader title={data.title} lead={data.summary}>
-    <Fragment slot="badges"><Badge variant="status">{projectStatus(data.status)}</Badge>{data.services.map((service) => <Badge>{service}</Badge>)}</Fragment>
+    <Fragment slot="badges"><Badge variant="status"><Text text={projectStatus(data.status)} /></Badge>{data.services.map((service) => <Badge><Text text={service} /></Badge>)}</Fragment>
   </PageHeader>
   <section class="project-overview" aria-labelledby="project-overview-title">
     <Container>
-      <h2 id="project-overview-title" class="sr-only">Ficha del proyecto</h2>
-      {data.logo && <Image src={data.logo} alt={`Logo de ${data.client}`} width={160} height={Math.round(160 * data.logo.height / data.logo.width)} format="webp" loading="lazy" class="project-logo" />}
-      <dl>{metadata.map(([label, value]) => <div data-reveal><dt>{label}</dt><dd>{value}</dd></div>)}</dl>
+      <h2 id="project-overview-title" class="sr-only"><Text text={"Ficha del proyecto"} /></h2>
+      {data.logo && <Image src={data.logo} alt={`Logo de ${data.client}`} data-alt-en={`${data.client} logo`} width={160} height={Math.round(160 * data.logo.height / data.logo.width)} format="webp" loading="lazy" class="project-logo" />}
+      <dl>{metadata.map(([label, value]) => <div data-reveal><dt><Text text={label} /></dt><dd><Text text={value} /></dd></div>)}</dl>
     </Container>
   </section>
   <section class="project-images" aria-labelledby="project-images-title">
     <Container>
-      <h2 id="project-images-title" class="sr-only">Imágenes de {data.title}</h2>
+      <h2 id="project-images-title" class="sr-only"><Text text={`Imágenes de ${data.title}`} english={`Images of ${data.title}`} /></h2>
       <div class="project-visual"><ProjectMedia image={data.cover} name={data.title} /></div>
       {data.gallery && data.gallery.length > 0 && <div class="project-gallery">{data.gallery.map((image, index) => <figure><ProjectMedia image={image} name={data.title} alt={`Captura ${index + 1} de ${data.title}`} /></figure>)}</div>}
     </Container>
   </section>
   <section class="section-space" aria-labelledby="project-body-title">
     <Container>
-      <h2 id="project-body-title" class="sr-only">Sobre el proyecto</h2>
-      <div class="prose"><Content /></div>
-      {(data.liveUrl || (data.isOwnProject && data.repoUrl)) && <div class="project-links">{data.liveUrl && <Button href={data.liveUrl} target="_blank" arrow>Ver sitio</Button>}{data.isOwnProject && data.repoUrl && <Button href={data.repoUrl} target="_blank" variant="secondary" arrow>Ver repositorio</Button>}</div>}
+      <h2 id="project-body-title" class="sr-only"><Text text={"Sobre el proyecto"} /></h2>
+      <div class="prose" data-language="es" lang="es-UY"><Content /></div>
+      <div class="prose" data-language="en" lang={EnglishContent ? 'en' : 'es-UY'}>{EnglishContent ? <EnglishContent /> : <Content />}</div>
+      {(data.liveUrl || (data.isOwnProject && data.repoUrl)) && <div class="project-links">{data.liveUrl && <Button href={data.liveUrl} target="_blank" arrow><Text text={"Ver sitio"} /></Button>}{data.isOwnProject && data.repoUrl && <Button href={data.repoUrl} target="_blank" variant="secondary" arrow><Text text={"Ver repositorio"} /></Button>}</div>}
     </Container>
   </section>
   <FinalCta />

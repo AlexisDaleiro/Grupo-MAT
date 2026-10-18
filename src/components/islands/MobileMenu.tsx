@@ -3,6 +3,8 @@ import { AnimatePresence, LazyMotion, MotionConfig, domAnimation, useReducedMoti
 import * as m from 'motion/react-m';
 import type { MouseEvent } from 'react';
 import type { NavItem } from '@/data/site';
+import { useLanguage } from '@/i18n/use-language';
+import { menuCopy } from '@/i18n/menu-copy';
 
 interface Props {
   navigation: readonly NavItem[];
@@ -12,6 +14,8 @@ interface Props {
 }
 
 export default function MobileMenu({ navigation, currentPath, appointmentUrl, externalAppointment }: Props) {
+  const language = useLanguage();
+  const t = (text: string) => language === 'en' ? menuCopy[text] ?? text : text;
   const [hydrated, setHydrated] = useState(false);
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(false);
@@ -101,11 +105,11 @@ export default function MobileMenu({ navigation, currentPath, appointmentUrl, ex
     <MotionConfig reducedMotion="user" transition={{ type: 'tween', duration: reduce ? 0 : 0.45, ease }}>
       <LazyMotion features={domAnimation} strict>
         <button ref={triggerRef} type="button" className="mobile-menu-trigger" hidden={!hydrated}
-          aria-label="Abrir menú" aria-expanded={open} aria-controls="mobile-menu-panel"
+          aria-label={t('Abrir menú')} aria-expanded={open} aria-controls="mobile-menu-panel"
           onClick={() => { setActive(true); setOpen(true); }}>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" /></svg>
         </button>
-        <dialog id="mobile-menu-panel" ref={dialogRef} className="mobile-menu-panel" aria-label="Menú principal" aria-modal="true" data-lenis-prevent
+        <dialog id="mobile-menu-panel" ref={dialogRef} className="mobile-menu-panel" aria-label={t('Menú principal')} aria-modal="true" data-lenis-prevent
           onCancel={(event) => { event.preventDefault(); setOpen(false); }}>
         <AnimatePresence onExitComplete={() => setActive(false)}>
           {open && (
@@ -114,22 +118,22 @@ export default function MobileMenu({ navigation, currentPath, appointmentUrl, ex
               animate={{ opacity: 1, y: 0, filter: reduce ? 'none' : 'blur(0px)' }}
               exit={{ opacity: 0, y: reduce ? 0 : -8, filter: reduce ? 'none' : 'blur(6px)' }}>
               <div className="mobile-menu-top">
-                <a href="/" className="mobile-menu-brand" aria-label="Grupo MAT, inicio" onClick={followLink}>Grupo <strong>MAT</strong></a>
-                <button ref={closeRef} type="button" className="mobile-menu-trigger" aria-label="Cerrar menú" onClick={() => setOpen(false)}>
+                <a href="/" className="mobile-menu-brand" aria-label={t('Grupo MAT, inicio')} onClick={followLink}>Grupo <strong>MAT</strong></a>
+                <button ref={closeRef} type="button" className="mobile-menu-trigger" aria-label={t('Cerrar menú')} onClick={() => setOpen(false)}>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6" /></svg>
                 </button>
               </div>
-              <nav aria-label="Navegación principal móvil">
+              <nav aria-label={t('Navegación principal móvil')}>
                 <ul className="mobile-menu-links">
                   {navigation.map((item, index) => (
                     <m.li key={item.href} initial={{ opacity: 0, y: reduce ? 0 : 8 }} animate={{ opacity: 1, y: 0 }}
                       transition={{ type: 'tween', duration: reduce ? 0 : 0.35, delay: reduce ? 0 : index * 0.05, ease }}>
-                      <a href={item.href} aria-current={currentPath === item.href ? 'page' : undefined} onClick={followLink}>{item.label}</a>
+                      <a href={item.href} aria-current={currentPath === item.href ? 'page' : undefined} onClick={followLink}>{t(item.label)}</a>
                     </m.li>
                   ))}
                 </ul>
                 <a className="mobile-menu-appointment" href={appointmentUrl} target={externalAppointment ? '_blank' : undefined}
-                  rel={externalAppointment ? 'noopener' : undefined} onClick={followLink}>Agendar una llamada</a>
+                  rel={externalAppointment ? 'noopener' : undefined} onClick={followLink}>{t('Agendar una llamada')}</a>
               </nav>
             </m.div>
           )}

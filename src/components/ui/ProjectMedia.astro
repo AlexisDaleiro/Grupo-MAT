@@ -10,7 +10,7 @@ const height = image ? Math.round(width * image.height / image.width) : 0;
 const widths = image ? [...new Set([320, 640, 960, 1280, width].filter((value) => value <= width))].sort((a, b) => a - b) : [];
 ---
 
-{image ? <Picture src={image} alt={alt} formats={['avif', 'webp']} width={width} height={height} widths={widths} sizes={sizes} loading="lazy" decoding="async" /> : <ProjectPlaceholder name={name} />}
+{image ? <Picture src={image} alt={alt} data-alt-en={alt.replace('Vista del proyecto', 'Project view:').replace(/Captura (\d+) de/u, 'Screenshot $1 of')} formats={['avif', 'webp']} width={width} height={height} widths={widths} sizes={sizes} loading="lazy" decoding="async" /> : <ProjectPlaceholder name={name} />}
 
 <style>
   :global(.project-visual picture), :global(.project-card__visual picture), :global(.project-gallery picture) { display: block; width: 100%; }

@@ -1,4 +1,5 @@
 ---
+import Text from '@/components/ui/Text.astro';
 import { Icon } from 'astro-icon/components';
 import Container from '@/components/ui/Container.astro';
 import SectionHeading from '@/components/ui/SectionHeading.astro';
@@ -12,8 +13,8 @@ import { differentiators } from '@/data/site';
       {differentiators.map((item) => (
         <article data-reveal>
           <Icon name={item.icon} size={25} aria-hidden="true" />
-          <h3>{item.title}</h3>
-          <p>{item.text}</p>
+          <h3><Text text={item.title} /></h3>
+          <p><Text text={item.text} /></p>
         </article>
       ))}
     </div>

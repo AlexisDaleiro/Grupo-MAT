@@ -1,4 +1,5 @@
 ---
+import Text from '@/components/ui/Text.astro';
 import Container from '@/components/ui/Container.astro';
 import Badge from '@/components/ui/Badge.astro';
 import Button from '@/components/ui/Button.astro';
@@ -10,17 +11,17 @@ import { contact } from '@/data/site';
   <div class="hero__glow" aria-hidden="true"></div>
   <Container>
     <div class="hero__content" data-hero-content>
-      <div class="hero__entry" style="--hero-delay: 0s"><Badge>Agencia de software B2B · Uruguay</Badge></div>
+      <div class="hero__entry" style="--hero-delay: 0s"><Badge><Text text={"Agencia de software B2B · Uruguay"} /></Badge></div>
       <h1 id="hero-title" class="type-display">
-        <span>Software a medida</span>
-        <span class="hero__accent">para empresas que venden a empresas.</span>
+        <span><Text text={"Software a medida"} /></span>
+        <span class="hero__accent"><Text text={"para empresas que venden a empresas."} /></span>
       </h1>
-      <p class="text-lead hero__entry hero__lead" style="--hero-delay: .25s">Diseñamos y desarrollamos e-commerce B2B, landing pages y automatizaciones para distribuidoras, mayoristas y fabricantes. Rápido, sin plantillas y con soporte todos los meses.</p>
+      <p class="text-lead hero__entry hero__lead" style="--hero-delay: .25s"><Text text={"Diseñamos y desarrollamos e-commerce B2B, landing pages y automatizaciones para distribuidoras, mayoristas y fabricantes. Rápido, sin plantillas y con soporte todos los meses."} /></p>
       <div class="hero__actions hero__entry" style="--hero-delay: .35s">
-        <Button href={contact.appointmentUrl} target={contact.calendlyUrl ? '_blank' : undefined} arrow>Agendar una llamada</Button>
-        <Button href="/proyectos" variant="secondary">Ver proyectos</Button>
+        <Button href={contact.appointmentUrl} target={contact.calendlyUrl ? '_blank' : undefined} arrow><Text text={"Agendar una llamada"} /></Button>
+        <Button href="/proyectos" variant="secondary"><Text text={"Ver proyectos"} /></Button>
       </div>
-      <p class="hero__microcopy hero__entry" style="--hero-delay: .45s">La primera llamada de diagnóstico no tiene costo.</p>
+      <p class="hero__microcopy hero__entry" style="--hero-delay: .45s"><Text text={"La primera llamada de diagnóstico no tiene costo."} /></p>
     </div>
   </Container>
 </section>

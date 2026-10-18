@@ -35,7 +35,7 @@ export function structuredData(site: URL, canonical: URL, breadcrumbs: readonly 
   if (canonical.href === home) {
     graph.push(organization, {
       '@type': 'WebSite', '@id': `${home}#website`, name: 'Grupo MAT', url: home,
-      inLanguage: 'es-UY', publisher: { '@id': organization['@id'] },
+      inLanguage: ['es-UY', 'en'], publisher: { '@id': organization['@id'] },
     });
   }
   if (breadcrumbs.length) graph.push({

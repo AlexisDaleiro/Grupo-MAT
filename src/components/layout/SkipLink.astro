@@ -1,4 +1,7 @@
-<a href="#contenido" class="skip-link" data-skip-link>Saltar al contenido</a>
+---
+import Text from '@/components/ui/Text.astro';
+---
+<a href="#contenido" class="skip-link" data-skip-link><Text text={"Saltar al contenido"} /></a>
 
 <script>
   document.querySelector<HTMLAnchorElement>('[data-skip-link]')?.addEventListener('click', () => {

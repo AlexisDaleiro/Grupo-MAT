@@ -1,4 +1,5 @@
 ---
+import Text from '@/components/ui/Text.astro';
 import { getCollection } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import PageHeader from '@/components/sections/PageHeader.astro';
@@ -14,10 +15,10 @@ const projects = (await getCollection('proyectos')).sort(byOrder);
   <PageHeader title="Proyectos" lead="Lo que estamos construyendo con nuestros clientes." />
   <section class="section-space" aria-labelledby="project-list-title">
     <Container>
-      <h2 id="project-list-title" class="sr-only">Nuestros proyectos</h2>
+      <h2 id="project-list-title" class="sr-only"><Text text={"Nuestros proyectos"} /></h2>
       <div class="projects-grid" data-spotlight-group>
         {projects.map((project) => <ProjectCard project={project} />)}
-        {projects.length < 3 && <a href="/contacto" class="next-project" data-reveal><span class="next-project__icon" aria-hidden="true"><Icon name="lucide:plus" size={28} /></span><h3>Tu proyecto puede ser el próximo.</h3><Icon name="lucide:arrow-up-right" size={24} aria-hidden="true" /></a>}
+        {projects.length < 3 && <a href="/contacto" class="next-project" data-reveal><span class="next-project__icon" aria-hidden="true"><Icon name="lucide:plus" size={28} /></span><h3><Text text={"Tu proyecto puede ser el próximo."} /></h3><Icon name="lucide:arrow-up-right" size={24} aria-hidden="true" /></a>}
       </div>
     </Container>
   </section>

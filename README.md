@@ -4,7 +4,7 @@ Sitio de Grupo MAT, agencia de software B2B de Uruguay. Astro con generación es
 
 ## Estado
 
-Fase 7: QA local de rendimiento, accesibilidad y navegadores. La Home y las páginas internas comparten el formulario funcional. Las páginas siguen siendo estáticas; solo `/api/contact` se ejecuta por solicitud. SEO y GA4 condicional con Partytown están implementados. Los resultados y límites del QA se documentan en `QA_REPORT.md`.
+Fase 7: QA local de rendimiento, accesibilidad y navegadores. Por pedido posterior del cliente, el selector de tema se reemplazó por ES/EN con cambio instantáneo y preferencia guardada. El diseño usa base crema y bandas ciruela. La Home y las páginas internas comparten el formulario funcional. Las páginas siguen siendo estáticas; solo `/api/contact` se ejecuta por solicitud. Los resultados y límites del QA se documentan en `QA_REPORT.md`.
 
 ## Desarrollo local
 
@@ -43,7 +43,7 @@ El cliente reemplazó la paleta azul de la especificación por Discreet Palette.
 
 Las superficies, hovers y colores secundarios usan tonos derivados de estos cuatro colores para conservar contraste. Los botones oscuros combinan rosa tierra con tinta `#2C131B`; el texto secundario usa `#F2D6CC`. Los inputs tienen un token `field-border` propio para mantener un borde distinguible. Hero, grids, spotlight, placeholders, menú, theme-color y recursos de marca comparten esta paleta.
 
-Geist y Geist Mono se sirven desde sus archivos variables latin de Fontsource con `font-display: swap`. Solo se precarga el woff2 de Geist, con prioridad alta. El tema se resuelve en el `<head>` antes de pintar: primero la elección guardada y después la preferencia del sistema. `ThemeToggle` guarda la selección, sincroniza sus instancias y actualiza `theme-color`, `aria-label` y `aria-pressed`. Sin acceso a almacenamiento sigue funcionando; sin JavaScript el botón queda oculto.
+Geist y Geist Mono se sirven desde sus archivos variables latin de Fontsource con `font-display: swap`. Solo se precarga el woff2 de Geist, con prioridad alta. El tema global queda fijo en claro; `data-theme="dark"` conserva las bandas de marca. La preferencia de tema anterior y la del sistema ya no cambian la página. `theme-color` usa el crema de la paleta.
 
 | Componente | Uso |
 | --- | --- |
@@ -56,7 +56,19 @@ Geist y Geist Mono se sirven desde sus archivos variables latin de Fontsource co
 | `ProjectPlaceholder` | `name` del proyecto; visual oscuro con grid y “Capturas próximamente”. |
 | `Avatar` | `name`, `photo` (imagen local importada), `initials` opcionales y `size` (96px por defecto). Sin foto muestra iniciales y, solo en desarrollo, “Foto pendiente”. |
 
-Los componentes están en `src/components/ui/` y el toggle en `src/components/layout/`. Los componentes UI no requieren React. El favicon es un SVG con la letra dibujada como path.
+Los componentes están en `src/components/ui/` y `LanguageToggle` en `src/components/layout/`. Los componentes UI no requieren React. El favicon es un SVG con la letra dibujada como path.
+
+## Idiomas ES/EN
+
+`LanguageToggle` muestra dos botones con áreas de 44px, estado `aria-pressed` y nombres accesibles que incluyen ES/EN. Español es el idioma inicial. El `<head>` aplica la preferencia `language` de `localStorage` antes de pintar; si el almacenamiento está bloqueado, el selector sigue funcionando en la página actual. La elección se sincroniza entre pestañas.
+
+`Text.astro` resuelve las traducciones de `src/i18n/english.ts` durante el build. Ambos textos quedan incluidos en el HTML, y CSS muestra el idioma elegido. El cambio no descarga traducciones ni reemplaza secciones. `scripts/language.ts` actualiza `html[lang]`, etiquetas accesibles, metadatos y mensajes prellenados de WhatsApp. Anuncia la elección en una región de estado y avisa al módulo de movimiento para recalcular las posiciones después de cambiar la altura del contenido.
+
+Las islas usan `useLanguage`, basado en [useSyncExternalStore de React](https://react.dev/reference/react/useSyncExternalStore), para sincronizar el idioma sin diferirlo respecto al resto de la página. Sus diccionarios pequeños cubren menú, opciones, placeholders, validación y estados del formulario. Cambiar el idioma conserva valores, opciones seleccionadas y estado del envío. Las opciones se presentan traducidas, pero los valores de la API y analítica mantienen sus identificadores originales en español.
+
+Las URLs y canonical se conservan. El HTML estático y los datos estructurados mantienen su base en español; `WebSite.inLanguage` declara los dos idiomas disponibles. Al elegir inglés se traducen también el título y los metadatos de la vista. Este selector ofrece inglés en la misma URL; no crea rutas `/en/` indexables por separado. Sin JavaScript se ofrece la versión completa en español y se oculta el selector.
+
+Para editar copy, conservá el texto español y su traducción en `src/i18n/english.ts`; usá `<Text text={texto} />` para nuevos textos estáticos. `form-copy.ts` y `menu-copy.ts` contienen el copy de las islas. Para el cuerpo de un proyecto, agregá `src/content/translations/proyectos/<slug>.md`: se descubre por el mismo slug, sin editar rutas. Si falta ese archivo en un proyecto nuevo, su cuerpo se conserva en español con `lang="es-UY"`; completá la traducción antes de presentarlo como contenido en inglés. La importación de Markdown sigue la [documentación de Astro 5](https://v5.docs.astro.build/en/guides/markdown-content/#the-content--component).
 
 ## Layout y movimiento
 
@@ -260,7 +272,7 @@ Referencia: [crear una regla de rate limiting en Cloudflare](https://developers.
 
 ## QA final de la Fase 7
 
-Los resultados de rendimiento de esta sección corresponden al build anterior al cambio de paleta. El ajuste de colores tiene su verificación específica al inicio de `QA_REPORT.md`; no se reutilizan estos puntajes como una nueva medición.
+Los resultados de rendimiento de esta sección corresponden al build anterior a los cambios de paleta e idioma. Sus verificaciones específicas están al inicio de `QA_REPORT.md`; no se reutilizan estos puntajes como una nueva medición.
 
 El reporte completo está en [QA_REPORT.md](QA_REPORT.md): Lighthouse mobile/desktop sobre Home, e-commerce B2B y contacto; 144 escenarios funcionales en Chrome, Firefox y WebKit; 15 escenarios de regresión final; axe en 50 estados, sin violaciones detectadas; y traces de scroll e interacciones. Los reportes detallados, scripts y capturas quedan fuera del repo. Tailwind excluye README y el reporte de sus fuentes para que editar documentación no agregue utilidades al CSS del sitio.
 

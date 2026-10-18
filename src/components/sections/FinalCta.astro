@@ -1,4 +1,5 @@
 ---
+import Text from '@/components/ui/Text.astro';
 import { Icon } from 'astro-icon/components';
 import Container from '@/components/ui/Container.astro';
 import ContactFormBlock from '@/components/ui/ContactFormBlock.astro';
@@ -9,11 +10,11 @@ import { contact } from '@/data/site';
   <Container>
     <div class="contact-grid">
       <div class="contact-copy">
-        <h2 id="contact-title" data-reveal>¿Tenés un proyecto en mente?</h2>
-        <p class="text-lead" data-reveal>Contanos qué necesitás y te respondemos con una propuesta clara.</p>
+        <h2 id="contact-title" data-reveal><Text text={"¿Tenés un proyecto en mente?"} /></h2>
+        <p class="text-lead" data-reveal><Text text={"Contanos qué necesitás y te respondemos con una propuesta clara."} /></p>
         <div class="contact-channels" data-reveal>
-          {contact.calendlyUrl && <a href={contact.calendlyUrl} target="_blank" rel="noopener"><Icon name="lucide:calendar" size={22} aria-hidden="true" /><span><strong>Agendá una llamada</strong><span>Elegí el horario que te quede cómodo.</span></span><Icon name="lucide:arrow-up-right" size={18} aria-hidden="true" /></a>}
-          {contact.whatsappUrl && <a href={contact.whatsappUrl} target="_blank" rel="noopener"><Icon name="simple-icons:whatsapp" size={22} aria-hidden="true" /><span><strong>Escribinos por WhatsApp</strong><span>{contact.whatsappLabel}</span></span><Icon name="lucide:arrow-up-right" size={18} aria-hidden="true" /></a>}
+          {contact.calendlyUrl && <a href={contact.calendlyUrl} target="_blank" rel="noopener"><Icon name="lucide:calendar" size={22} aria-hidden="true" /><span><strong><Text text={"Agendá una llamada"} /></strong><span><Text text={"Elegí el horario que te quede cómodo."} /></span></span><Icon name="lucide:arrow-up-right" size={18} aria-hidden="true" /></a>}
+          {contact.whatsappUrl && <a href={contact.whatsappUrl} target="_blank" rel="noopener"><Icon name="simple-icons:whatsapp" size={22} aria-hidden="true" /><span><strong><Text text={"Escribinos por WhatsApp"} /></strong><span>{contact.whatsappLabel}</span></span><Icon name="lucide:arrow-up-right" size={18} aria-hidden="true" /></a>}
         </div>
       </div>
       <ContactFormBlock />
@@ -31,7 +32,7 @@ import { contact } from '@/data/site';
   .contact-channels a > :global(svg:first-child) { flex-shrink: 0; color: var(--brand-text); }
   .contact-channels a > :global(svg:last-child) { margin-left: auto; }
   .contact-channels strong { display: block; font-weight: 500; }
-  .contact-channels span span { display: block; color: var(--fg-muted); font-size: .875rem; }
+  .contact-channels a > span > span { display: block; color: var(--fg-muted); font-size: .875rem; }
   .contact-channels a:hover strong { color: var(--brand-text); }
   @media (width >= 64rem) { .contact-grid { grid-template-columns: 1fr 1fr; gap: 5rem; } }
 </style>

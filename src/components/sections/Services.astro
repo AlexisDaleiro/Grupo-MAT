@@ -1,4 +1,5 @@
 ---
+import Text from '@/components/ui/Text.astro';
 import { Icon } from 'astro-icon/components';
 import Container from '@/components/ui/Container.astro';
 import SectionHeading from '@/components/ui/SectionHeading.astro';
@@ -15,15 +16,15 @@ import { homeServices } from '@/data/site';
         <SpotlightCard class:list={['service-card', { 'service-card--featured': index === 0 }]} data-reveal>
           <div class="service-card__top">
             <Icon name={service.icon} size={28} class="service-card__icon" aria-hidden="true" />
-            <h3>{service.title}</h3>
-            <p class="service-card__description">{service.description}</p>
+            <h3><Text text={service.title} /></h3>
+            <p class="service-card__description"><Text text={service.description} /></p>
           </div>
           <ul role="list">
-            {service.bullets.map((bullet) => <li><Icon name="lucide:check" size={17} aria-hidden="true" /><span>{bullet}</span></li>)}
+            {service.bullets.map((bullet) => <li><Icon name="lucide:check" size={17} aria-hidden="true" /><span><Text text={bullet} /></span></li>)}
           </ul>
           <div class="service-card__bottom">
-            <p class="service-card__timeline">{service.timeline}</p>
-            <Button href={service.href} variant="ghost" arrow>{service.link}</Button>
+            <p class="service-card__timeline"><Text text={service.timeline} /></p>
+            <Button href={service.href} variant="ghost" arrow><Text text={service.link} /></Button>
           </div>
         </SpotlightCard>
       ))}

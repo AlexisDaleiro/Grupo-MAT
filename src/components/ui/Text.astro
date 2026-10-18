@@ -1,0 +1,6 @@
+---
+import { en } from '@/i18n/english';
+interface Props { text: string; english?: string }
+const { text, english = en(text) } = Astro.props;
+---
+{english === text ? text : <><span data-language="es" lang="es-UY">{text}</span><span data-language="en" lang="en">{english}</span></>}

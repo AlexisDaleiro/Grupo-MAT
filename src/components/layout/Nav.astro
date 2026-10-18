@@ -1,8 +1,9 @@
 ---
+import Text from '@/components/ui/Text.astro';
 import Container from '@/components/ui/Container.astro';
 import Logo from '@/components/ui/Logo.astro';
 import Button from '@/components/ui/Button.astro';
-import ThemeToggle from './ThemeToggle.astro';
+import LanguageToggle from './LanguageToggle.astro';
 import MobileMenu from '@/components/islands/MobileMenu';
 import { navigation, contact } from '@/data/site';
 import '@/styles/mobile-menu.css';
@@ -15,15 +16,15 @@ const currentPath = Astro.url.pathname.replace(/\/$/u, '') || '/';
 <header class="site-header" data-site-header data-theme={hasHero ? 'dark' : undefined}>
   <Container class="nav-inner">
     <Logo />
-    <nav class="nav-desktop" aria-label="Navegación principal">
+    <nav class="nav-desktop" aria-label="Navegación principal" data-label-en="Main navigation">
       {navigation.map((item) => (
-        <a href={item.href} data-nav-link aria-current={currentPath === item.href ? 'page' : undefined}>{item.label}</a>
+        <a href={item.href} data-nav-link aria-current={currentPath === item.href ? 'page' : undefined}><Text text={item.label} /></a>
       ))}
     </nav>
     <div class="nav-controls">
-      <ThemeToggle />
+      <LanguageToggle />
       <div class="nav-appointment">
-        <Button href={contact.appointmentUrl} target={contact.calendlyUrl ? '_blank' : undefined}>Agendar una llamada</Button>
+        <Button href={contact.appointmentUrl} target={contact.calendlyUrl ? '_blank' : undefined}><Text text={"Agendar una llamada"} /></Button>
       </div>
       <div class="nav-mobile">
         <MobileMenu navigation={navigation} currentPath={currentPath} appointmentUrl={contact.appointmentUrl} externalAppointment={Boolean(contact.calendlyUrl)} client:media="(max-width: 1023px)" />
@@ -65,7 +66,6 @@ const currentPath = Astro.url.pathname.replace(/\/$/u, '') || '/';
   @media (width >= 64rem) { .nav-desktop { display: flex; } .nav-mobile { display: none; } }
   @media (prefers-reduced-motion: no-preference) {
     .site-header { transition: background-color 300ms, border-color 300ms; }
-    :global(body.theme-transition) .site-header { transition: none; }
   }
   @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
     .site-header[data-scrolled] { background: color-mix(in srgb, var(--canvas) 95%, transparent); }

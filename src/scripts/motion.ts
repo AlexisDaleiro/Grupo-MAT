@@ -124,6 +124,11 @@ try {
     };
   });
   void document.fonts.ready.then(() => ScrollTrigger.refresh());
+  let languageFrame = 0;
+  window.addEventListener('site:language', () => {
+    cancelAnimationFrame(languageFrame);
+    languageFrame = requestAnimationFrame(() => ScrollTrigger.refresh());
+  });
   window.addEventListener('pageshow', (event) => { if (event.persisted) ScrollTrigger.refresh(); });
   window.addEventListener('pagehide', (event) => { if (!event.persisted) media.revert(); });
   window.__motionReady = true;

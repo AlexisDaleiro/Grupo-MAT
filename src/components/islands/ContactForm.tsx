@@ -6,6 +6,8 @@ import { contactOptions } from '@/data/site';
 import { contactSchema, contactErrors, contactFields } from '@/lib/contact-schema';
 import type { ContactErrors, ContactField, ContactFormValues } from '@/lib/contact-schema';
 import { track } from '@/lib/analytics';
+import { useLanguage } from '@/i18n/use-language';
+import { formCopy } from '@/i18n/form-copy';
 
 interface Props { whatsappUrl?: string }
 type Status = 'idle' | 'sending' | 'success' | 'error';
@@ -28,6 +30,11 @@ function responseErrors(value: unknown): ContactErrors {
 }
 
 export default function ContactForm({ whatsappUrl }: Props) {
+  const language = useLanguage();
+  const t = (text: string) => language === 'en' ? formCopy[text] ?? text : text;
+  const localizedWhatsappUrl = whatsappUrl ? new URL(whatsappUrl) : undefined;
+  if (localizedWhatsappUrl) localizedWhatsappUrl.searchParams.set('text', language === 'en'
+    ? 'Hi Grupo MAT, I would like to discuss a project.' : 'Hola Grupo MAT, quiero consultar por un proyecto.');
   const id = useId();
   const reduce = useReducedMotion();
   const [hydrated, setHydrated] = useState(false);
@@ -142,18 +149,18 @@ export default function ContactForm({ whatsappUrl }: Props) {
     const options = fieldName === 'servicio' || fieldName === 'presupuesto' || fieldName === 'plazo' ? contactOptions[fieldName] : undefined;
     return (
       <div className={`contact-field${fieldName === 'mensaje' || fieldName === 'plazo' ? ' contact-field--wide' : ''}`} key={fieldName}>
-        <label htmlFor={fieldId}>{labels[fieldName]}{required && <span aria-hidden="true"> *</span>}</label>
+        <label htmlFor={fieldId}>{t(labels[fieldName])}{required && <span aria-hidden="true"> *</span>}</label>
         {options ? (
-          <select {...attributes}><option value="">{required ? 'Elegí una opción' : 'Opcional'}</option>{options.map((option) => <option key={option} value={option}>{option}</option>)}</select>
+          <select {...attributes}><option value="">{t(required ? 'Elegí una opción' : 'Opcional')}</option>{options.map((option) => <option key={option} value={option}>{t(option)}</option>)}</select>
         ) : fieldName === 'mensaje' ? (
-          <textarea {...attributes} rows={5} minLength={20} maxLength={2000} placeholder="Contanos qué vende tu empresa, cómo toman pedidos hoy y qué te gustaría resolver." />
+          <textarea {...attributes} rows={5} minLength={20} maxLength={2000} placeholder={t('Contanos qué vende tu empresa, cómo toman pedidos hoy y qué te gustaría resolver.')} />
         ) : (
           <input {...attributes} type={fieldName === 'email' ? 'email' : 'text'} maxLength={limits[fieldName]}
             minLength={fieldName === 'nombre' || fieldName === 'empresa' ? 2 : undefined}
             autoComplete={fieldName === 'nombre' ? 'name' : fieldName === 'empresa' ? 'organization' : fieldName === 'cargo' ? 'organization-title' : 'email'} />
         )}
         <div id={`${fieldId}-error`} className="contact-field-error">
-          <AnimatePresence initial={false}>{errors[fieldName] && <m.span key="error" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>{errors[fieldName]}</m.span>}</AnimatePresence>
+          <AnimatePresence initial={false}>{errors[fieldName] && <m.span key="error" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>{t(errors[fieldName])}</m.span>}</AnimatePresence>
         </div>
       </div>
     );
@@ -163,7 +170,7 @@ export default function ContactForm({ whatsappUrl }: Props) {
     <MotionConfig reducedMotion="user" transition={{ type: 'tween', duration: reduce ? 0 : 0.25, ease }}>
       <LazyMotion features={domAnimation} strict>
         <div className="contact-form-shell" data-contact-form data-status={status}>
-          <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">{announcement}</p>
+          <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">{t(announcement)}</p>
           <div className="contact-panel-host" style={{ minHeight: panelHeight || undefined }} inert={status === 'sending' ? true : undefined}>
             <AnimatePresence mode="wait" initial={false}>
               <m.div key={status} ref={measurePanel} data-state={status}
@@ -173,23 +180,23 @@ export default function ContactForm({ whatsappUrl }: Props) {
                 {status === 'success' ? (
                   <div className="contact-success">
                     <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><circle cx="12" cy="12" r="10" /><path d="m7 12 3 3 7-7" /></svg>
-                    <h3 ref={successRef} tabIndex={-1}>¡Gracias! Recibimos tu consulta.</h3>
-                    <p>Te respondemos pronto por email.</p>
+                    <h3 ref={successRef} tabIndex={-1}>{t('¡Gracias! Recibimos tu consulta.')}</h3>
+                    <p>{t('Te respondemos pronto por email.')}</p>
                   </div>
                 ) : (
-                  <form action="/api/contact" method="post" noValidate aria-label="Formulario de contacto" aria-busy={status === 'sending'} onSubmit={submit}>
-                    <p className="contact-form-note">Los campos con * son obligatorios.</p>
+                  <form action="/api/contact" method="post" noValidate aria-label={t('Formulario de contacto')} aria-busy={status === 'sending'} onSubmit={submit}>
+                    <p className="contact-form-note">{t('Los campos con * son obligatorios.')}</p>
                     <fieldset disabled={!hydrated || status === 'sending'}>
-                      <legend className="sr-only">Datos de tu consulta</legend>
+                      <legend className="sr-only">{t('Datos de tu consulta')}</legend>
                       <div className="contact-fields">{contactFields.map(field)}</div>
-                      <div className="contact-honeypot" aria-hidden="true"><label htmlFor={`website-${id}`}>Sitio web</label><input id={`website-${id}`} name="website" type="text" tabIndex={-1} autoComplete="off" value={values.website} onChange={(event) => setValues((previous) => ({ ...previous, website: event.target.value }))} /></div>
+                      <div className="contact-honeypot" aria-hidden="true"><label htmlFor={`website-${id}`}>{t('Sitio web')}</label><input id={`website-${id}`} name="website" type="text" tabIndex={-1} autoComplete="off" value={values.website} onChange={(event) => setValues((previous) => ({ ...previous, website: event.target.value }))} /></div>
                       <button className="contact-submit" type="submit" disabled={!hydrated || status === 'sending'}>
-                        {status === 'sending' ? <><svg className="contact-spinner" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><circle cx="12" cy="12" r="9" opacity=".25" /><path d="M12 3a9 9 0 0 1 9 9" /></svg>Enviando…</> : <>Enviar consulta<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6" /></svg></>}
+                        {status === 'sending' ? <><svg className="contact-spinner" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><circle cx="12" cy="12" r="9" opacity=".25" /><path d="M12 3a9 9 0 0 1 9 9" /></svg>{t('Enviando…')}</> : <>{t('Enviar consulta')}<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6" /></svg></>}
                       </button>
                     </fieldset>
-                    <p className="contact-privacy">Usamos tus datos solo para responder tu consulta. Ver <a href="/privacidad">Política de privacidad</a>.</p>
+                    <p className="contact-privacy">{t('Usamos tus datos solo para responder tu consulta. Ver')} <a href="/privacidad">{t('Política de privacidad')}</a>.</p>
                     <div className="contact-feedback">
-                      {status === 'error' && <p ref={errorRef} tabIndex={-1}>No pudimos enviar tu consulta. Probá de nuevo o {whatsappUrl ? <a href={whatsappUrl} target="_blank" rel="noopener">escribinos por WhatsApp.</a> : 'escribinos por WhatsApp.'}</p>}
+                      {status === 'error' && <p ref={errorRef} tabIndex={-1}>{t('No pudimos enviar tu consulta. Probá de nuevo o')} {localizedWhatsappUrl ? <a href={localizedWhatsappUrl.href} target="_blank" rel="noopener">{t('escribinos por WhatsApp.')}</a> : t('escribinos por WhatsApp.')}</p>}
                     </div>
                   </form>
                 )}

@@ -1,4 +1,5 @@
 ---
+import Text from '@/components/ui/Text.astro';
 import ContactForm from '@/components/islands/ContactForm';
 import { contact } from '@/data/site';
 import '@/styles/contact-form.css';
@@ -6,7 +7,7 @@ import '@/styles/contact-form.css';
 
 <div class="contact-form-block">
   <noscript>
-    <p class="contact-noscript-message">Para enviar el formulario necesitás JavaScript activado.{contact.whatsappUrl && <> También podés <a href={contact.whatsappUrl} target="_blank" rel="noopener">escribirnos por WhatsApp al {contact.whatsappLabel}</a>.</>}</p>
+    <p class="contact-noscript-message">Para enviar el formulario necesitás JavaScript activado.{contact.whatsappUrl && <> <Text text={"También podés"} /> <a href={contact.whatsappUrl} target="_blank" rel="noopener">escribirnos por WhatsApp al {contact.whatsappLabel}</a>.</>}</p>
   </noscript>
   <ContactForm whatsappUrl={contact.whatsappUrl} client:visible />
 </div>

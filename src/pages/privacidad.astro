@@ -1,4 +1,5 @@
 ---
+import Text from '@/components/ui/Text.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import PageHeader from '@/components/sections/PageHeader.astro';
 import Container from '@/components/ui/Container.astro';
@@ -10,21 +11,21 @@ import '@/styles/prose.css';
   <PageHeader title="Política de privacidad" />
   <section class="section-space" aria-labelledby="privacy-content-title">
     <Container>
-      <h2 id="privacy-content-title" class="sr-only">Tratamiento de datos personales</h2>
+      <h2 id="privacy-content-title" class="sr-only"><Text text={"Tratamiento de datos personales"} /></h2>
       <div class="prose">
-        <h2>Responsable</h2>
-        <p>Grupo MAT, Uruguay.</p>
-        <h2>Datos que recolectamos</h2>
-        <p>Los datos del formulario: nombre, empresa, email, cargo, servicio, presupuesto, plazo y mensaje. También datos de navegación anónimos de Google Analytics, cuando está habilitado.</p>
-        <h2>Para qué los usamos</h2>
-        <p>Para responder tu consulta y enviarte una propuesta. No los vendemos ni los cedemos a terceros.</p>
-        <h2>Proveedores</h2>
-        <ul><li>Cloudflare: hosting.</li><li>Resend: envío de emails.</li><li>Google Analytics: medición.</li></ul>
-        <h2>Tus derechos</h2>
-        <p>De acuerdo con la Ley N° 18.331, tenés derecho al acceso, rectificación, actualización y supresión de tus datos.</p>
-        <p>Para ejercerlos, {contact.whatsappUrl ? <a href={contact.whatsappUrl} target="_blank" rel="noopener">escribinos por WhatsApp</a> : 'escribinos'} o por el <a href="/contacto#formulario">formulario de contacto</a>.</p>
-        <h2>Última actualización</h2>
-        <p><time datetime="2026-10-17">17 de octubre de 2026</time>.</p>
+        <h2><Text text={"Responsable"} /></h2>
+        <p><Text text={"Grupo MAT, Uruguay."} /></p>
+        <h2><Text text={"Datos que recolectamos"} /></h2>
+        <p><Text text={"Los datos del formulario: nombre, empresa, email, cargo, servicio, presupuesto, plazo y mensaje. También datos de navegación anónimos de Google Analytics, cuando está habilitado."} /></p>
+        <h2><Text text={"Para qué los usamos"} /></h2>
+        <p><Text text={"Para responder tu consulta y enviarte una propuesta. No los vendemos ni los cedemos a terceros."} /></p>
+        <h2><Text text={"Proveedores"} /></h2>
+        <ul><li><Text text={"Cloudflare: hosting."} /></li><li><Text text={"Resend: envío de emails."} /></li><li><Text text={"Google Analytics: medición."} /></li></ul>
+        <h2><Text text={"Tus derechos"} /></h2>
+        <p><Text text={"De acuerdo con la Ley N° 18.331, tenés derecho al acceso, rectificación, actualización y supresión de tus datos."} /></p>
+        <p><Text text="Para ejercerlos," /> {contact.whatsappUrl ? <a href={contact.whatsappUrl} target="_blank" rel="noopener"><Text text="escribinos por WhatsApp" /></a> : <Text text="escribinos" />} <Text text="o por el" /> <a href="/contacto#formulario"><Text text="formulario de contacto" /></a>.</p>
+        <h2><Text text={"Última actualización"} /></h2>
+        <p><time datetime="2026-10-17"><Text text={"17 de octubre de 2026"} /></time>.</p>
       </div>
     </Container>
   </section>

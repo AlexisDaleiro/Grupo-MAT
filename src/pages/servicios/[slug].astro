@@ -1,4 +1,5 @@
 ---
+import Text from '@/components/ui/Text.astro';
 import { getCollection, getEntry } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import type { GetStaticPaths } from 'astro';
@@ -26,18 +27,18 @@ if (data.relatedProject && !relatedProject) throw new Error(`No existe el proyec
   service={{ name: data.headline, serviceType: data.title, description: data.seoDescription }} hasHero>
   <PageHeader eyebrow="Servicios" title={data.headline} lead={data.lead} appointment />
   <section class="section-space audience" aria-labelledby="audience-title">
-    <Container><div class="audience-grid"><SectionHeading id="audience-title" title="Para quién es" reveal /><p class="text-lead" data-reveal>{data.audience}</p></div></Container>
+    <Container><div class="audience-grid"><SectionHeading id="audience-title" title="Para quién es" reveal /><p class="text-lead" data-reveal><Text text={data.audience} /></p></div></Container>
   </section>
   <section class="section-space problems" aria-labelledby="problems-title">
     <Container>
       <SectionHeading id="problems-title" title="Problemas que resolvemos" reveal />
-      <div class="problems-grid" data-spotlight-group>{data.problems.map((problem) => <SpotlightCard class="problem-card" data-reveal><Icon name={data.icon} size={24} aria-hidden="true" /><h3>{problem}</h3></SpotlightCard>)}</div>
+      <div class="problems-grid" data-spotlight-group>{data.problems.map((problem) => <SpotlightCard class="problem-card" data-reveal><Icon name={data.icon} size={24} aria-hidden="true" /><h3><Text text={problem} /></h3></SpotlightCard>)}</div>
     </Container>
   </section>
   <section class="section-space" aria-labelledby="includes-title">
     <Container><div class="includes-grid">
       <SectionHeading id="includes-title" title="Qué incluye" reveal />
-      <div><ul class="includes-list" role="list">{data.includes.map((item) => <li data-reveal><Icon name="lucide:check" size={19} aria-hidden="true" /><span>{item}</span></li>)}</ul><p class="timeline" data-reveal><span>Plazo</span><strong>{data.timeline}</strong></p></div>
+      <div><ul class="includes-list" role="list">{data.includes.map((item) => <li data-reveal><Icon name="lucide:check" size={19} aria-hidden="true" /><span><Text text={item} /></span></li>)}</ul><p class="timeline" data-reveal><span><Text text={"Plazo"} /></span><strong><Text text={data.timeline} /></strong></p></div>
     </div></Container>
   </section>
   <CompactProcess />
@@ -57,7 +58,7 @@ if (data.relatedProject && !relatedProject) throw new Error(`No existe el proyec
   .includes-list li { display: flex; align-items: start; gap: .875rem; }
   .includes-list :global(svg) { margin-top: .3rem; flex-shrink: 0; color: var(--brand-text); }
   .timeline { display: grid; gap: .75rem; margin-top: 2.5rem; border-left: 2px solid var(--brand); padding-left: 1.5rem; }
-  .timeline span { color: var(--fg-muted); font-family: var(--font-mono); font-size: .75rem; text-transform: uppercase; letter-spacing: .14em; }
+  .timeline > span { color: var(--fg-muted); font-family: var(--font-mono); font-size: .75rem; text-transform: uppercase; letter-spacing: .14em; }
   .timeline strong { font-family: var(--font-mono); font-size: .9375rem; font-weight: 500; }
   .related-project { border-top: 1px solid var(--line); }
   .related-grid { display: grid; margin-top: 3rem; max-width: 34rem; }

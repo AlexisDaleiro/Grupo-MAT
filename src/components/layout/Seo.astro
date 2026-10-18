@@ -1,6 +1,7 @@
 ---
 import { canonicalUrl, defaultSeoImage, serializeJsonLd, structuredData } from '@/lib/seo';
 import type { BreadcrumbItem, SeoImage, ServiceMetadata } from '@/lib/seo';
+import { en } from '@/i18n/english';
 
 interface Props {
   title?: string;
@@ -26,24 +27,24 @@ const imageUrl = new URL(image.src, site);
 const jsonLd = structuredData(site, canonical, breadcrumbs, service);
 ---
 
-<title>{title}</title>
-<meta name="description" content={description} />
+<title data-title-en={en(title)}>{title}</title>
+<meta name="description" content={description} data-content-en={en(description)} />
 <link rel="canonical" href={canonical} />
 <link rel="sitemap" href="/sitemap-index.xml" />
 {noindex && <meta name="robots" content="noindex, follow" />}
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Grupo MAT" />
-<meta property="og:locale" content="es_UY" />
-<meta property="og:title" content={title} />
-<meta property="og:description" content={description} />
+<meta property="og:locale" content="es_UY" data-content-en="en_US" />
+<meta property="og:title" content={title} data-content-en={en(title)} />
+<meta property="og:description" content={description} data-content-en={en(description)} />
 <meta property="og:url" content={canonical} />
 <meta property="og:image" content={imageUrl} />
 <meta property="og:image:width" content={String(image.width)} />
 <meta property="og:image:height" content={String(image.height)} />
-<meta property="og:image:alt" content={image.alt} />
+<meta property="og:image:alt" content={image.alt} data-content-en={en(image.alt)} />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content={title} />
-<meta name="twitter:description" content={description} />
+<meta name="twitter:title" content={title} data-content-en={en(title)} />
+<meta name="twitter:description" content={description} data-content-en={en(description)} />
 <meta name="twitter:image" content={imageUrl} />
-<meta name="twitter:image:alt" content={image.alt} />
+<meta name="twitter:image:alt" content={image.alt} data-content-en={en(image.alt)} />
 <script type="application/ld+json" is:inline set:html={serializeJsonLd(jsonLd)} />

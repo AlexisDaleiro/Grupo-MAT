@@ -5,7 +5,7 @@ type Props = Omit<HTMLAttributes<'a'>, 'href' | 'aria-label'> & { context?: 'nav
 const { context = 'nav', class: className, ...attributes } = Astro.props;
 ---
 
-<a {...attributes} href="/" aria-label="Grupo MAT, inicio" class:list={['logo', `logo--${context}`, className]}>
+<a {...attributes} href="/" aria-label="Grupo MAT, inicio" data-label-en="Grupo MAT, home" class:list={['logo', `logo--${context}`, className]}>
   <span>Grupo <strong>MAT</strong></span>
 </a>
 

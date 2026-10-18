@@ -1,4 +1,5 @@
 ---
+import Text from '@/components/ui/Text.astro';
 import type { HTMLAttributes } from 'astro/types';
 
 type Props = Omit<HTMLAttributes<'div'>, 'role' | 'aria-label'> & { name: string };
@@ -11,10 +12,11 @@ const { name, class: className, ...attributes } = Astro.props;
   class:list={['project-placeholder', className]}
   role="img"
   aria-label={`${name}. Capturas próximamente.`}
+  data-label-en={`${name}. Screenshots coming soon.`}
 >
   <div class="project-placeholder__copy">
     <p class="project-placeholder__name">{name}</p>
-    <p class="project-placeholder__caption">Capturas próximamente</p>
+    <p class="project-placeholder__caption"><Text text={"Capturas próximamente"} /></p>
   </div>
 </div>
 

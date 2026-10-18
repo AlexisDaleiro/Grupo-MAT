@@ -1,5 +1,24 @@
 # QA de Grupo MAT — Fase 7
 
+## Selector de idioma ES/EN
+
+El cliente reemplazó el cambio de tema por un selector de español e inglés. La paleta actual se conserva con base clara y bandas ciruela. Español es el idioma inicial; la elección se guarda y se sincroniza entre pestañas. Se tradujeron las nueve rutas, navegación, FAQ, contenido de DISTRICO, etiquetas accesibles, metadatos de la vista, WhatsApp y estados del formulario.
+
+Verificación del build con SHA-256 `08c85cff7569aa4064c3adc54cfc95374394dceca682cf26901ea0e7d2bd880a`:
+
+- `npx astro check`: 62 archivos, 0 errores, 0 warnings y 0 hints. `npm run build`: correcto; continúan únicamente los avisos ya conocidos de comentarios de Zod.
+- 144 vistas ES/EN aprobadas: nueve rutas a 360, 768, 1024 y 1440px en Chrome; las nueve rutas a 360 y 1440px en Firefox y WebKit. Se verificaron traducciones, ausencia de overflow, metadatos, teclado del menú, restauración de foco y ausencia de pedidos de red al elegir idioma.
+- 12 vistas adicionales sin JavaScript aprobadas: Home y contacto a 360 y 1440px en los tres motores. Se conserva el contenido español y la navegación alternativa; el selector queda oculto.
+- Axe-core 4.14.0: 50 estados en ES/EN, ninguna violación detectada. Se corrigieron los nombres accesibles de los botones para incluir sus códigos visibles ES y EN. La limitación de axe frente a gradientes y la validación pendiente de Safari real siguen aplicando.
+- Cinco casos de estado y persistencia aprobados: formulario a 360 y 1440px con valores y selección conservados, validación de cliente, error 400, error 500 y éxito mediante respuestas simuladas; persistencia al navegar y recargar, sincronización entre pestañas y funcionamiento con almacenamiento bloqueado. Los valores enviados a la API conservan sus identificadores españoles. No se enviaron emails reales.
+- JS inicial de desktop: 57.399 bytes gzip sin islas hidratadas ni GA, dentro del límite de 60.000. SEO base, JSON-LD, sitemap, robots, headers y recursos de marca vuelven a validar localmente.
+
+Se midieron además 40 cambios de idioma en Chrome sobre la Home, con CPU 4×, sin otros tests de navegador en paralelo. El tiempo máximo desde el click hasta dos `requestAnimationFrame` fue de 154,5ms a 360px y 141,9ms a 1440px. No hubo pedidos de red. La medición incluye la actualización de idioma y el recálculo de posiciones del movimiento; es una prueba local de respuesta, no INP de campo.
+
+Las traducciones estáticas se incluyen en el HTML y se seleccionan con CSS. Las islas se sincronizan mediante `useSyncExternalStore`; la verificación detectó y corrigió una actualización diferida del formulario en WebKit. Se conservan la URL, nodos de los controles y estado del formulario. El español sigue siendo la base del HTML estático y los datos estructurados; este selector no crea rutas `/en/` indexables por separado. `WebSite.inLanguage` declara ES y EN.
+
+Evidencia fuera del repo: `language-qa-*.json`, `language-axe.json`, `language-state.json`, `language-speed.json`, `language-seo.json` y capturas `language-*.png`. Los apartados de paleta y rendimiento que siguen documentan builds anteriores; Lighthouse y los traces de scroll no se repitieron para este ajuste, y los pendientes de LCP no se dan por cerrados.
+
 ## Cambio de paleta posterior al QA
 
 El cliente pidió Discreet Palette: `#800000`, `#BB8376`, `#FFF4EE` y `#582B39`. Se actualizaron ambos temas, los efectos decorativos, controles, colores del navegador y recursos de marca. Los puntajes de Lighthouse y traces que siguen corresponden al build anterior a este ajuste; permanecen como evidencia histórica.

@@ -1,4 +1,5 @@
 ---
+import Text from '@/components/ui/Text.astro';
 import { Icon } from 'astro-icon/components';
 import Container from '@/components/ui/Container.astro';
 import Logo from '@/components/ui/Logo.astro';
@@ -11,34 +12,34 @@ const year = new Intl.DateTimeFormat('es-UY', { year: 'numeric', timeZone: 'Amer
     <div class="footer-grid">
       <div class="footer-brand">
         <Logo context="footer" />
-        <p>Software a medida para empresas que venden a empresas.</p>
+        <p><Text text={"Software a medida para empresas que venden a empresas."} /></p>
         {socialLinks.length > 0 && (
           <div class="footer-social">
             {socialLinks.map((social) => (
-              <a href={social.href} target="_blank" rel="noopener" aria-label={`Grupo MAT en ${social.label}`}><Icon name={social.icon} size={20} aria-hidden="true" /></a>
+              <a href={social.href} target="_blank" rel="noopener" aria-label={`Grupo MAT en ${social.label}`} data-label-en={`Grupo MAT on ${social.label}`}><Icon name={social.icon} size={20} aria-hidden="true" /></a>
             ))}
           </div>
         )}
       </div>
-      <nav aria-label="Servicios en el pie de página">
-        <p class="footer-heading">Servicios</p>
-        <ul>{serviceLinks.map((item) => <li><a href={item.href}>{item.label}</a></li>)}</ul>
+      <nav aria-label="Servicios en el pie de página" data-label-en="Footer services">
+        <p class="footer-heading"><Text text={"Servicios"} /></p>
+        <ul>{serviceLinks.map((item) => <li><a href={item.href}><Text text={item.label} /></a></li>)}</ul>
       </nav>
-      <nav aria-label="Empresa en el pie de página">
-        <p class="footer-heading">Empresa</p>
-        <ul>{companyLinks.map((item) => <li><a href={item.href}>{item.label}</a></li>)}</ul>
+      <nav aria-label="Empresa en el pie de página" data-label-en="Footer company links">
+        <p class="footer-heading"><Text text={"Empresa"} /></p>
+        <ul>{companyLinks.map((item) => <li><a href={item.href}><Text text={item.label} /></a></li>)}</ul>
       </nav>
-      {(contact.whatsappUrl || contact.calendlyUrl) && <nav aria-label="Contacto en el pie de página">
-        <p class="footer-heading">Contacto</p>
+      {(contact.whatsappUrl || contact.calendlyUrl) && <nav aria-label="Contacto en el pie de página" data-label-en="Footer contact">
+        <p class="footer-heading"><Text text={"Contacto"} /></p>
         <ul>
           {contact.whatsappUrl && <li><a href={contact.whatsappUrl} target="_blank" rel="noopener" data-track="whatsapp">WhatsApp {contact.whatsappLabel}</a></li>}
-          {contact.calendlyUrl && <li><a href={contact.calendlyUrl} target="_blank" rel="noopener" data-track="calendly">Agendar una llamada</a></li>}
+          {contact.calendlyUrl && <li><a href={contact.calendlyUrl} target="_blank" rel="noopener" data-track="calendly"><Text text={"Agendar una llamada"} /></a></li>}
         </ul>
       </nav>}
     </div>
     <div class="footer-bottom">
-      <p>© {year} Grupo MAT · Hecho en Uruguay</p>
-      <a href="/privacidad">Política de privacidad</a>
+      <p>© {year} Grupo MAT · <Text text="Hecho en Uruguay" /></p>
+      <a href="/privacidad"><Text text={"Política de privacidad"} /></a>
     </div>
   </Container>
 </footer>
