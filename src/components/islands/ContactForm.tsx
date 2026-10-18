@@ -11,11 +11,11 @@ import { formCopy } from '@/i18n/form-copy';
 
 interface Props { whatsappUrl?: string }
 type Status = 'idle' | 'sending' | 'success' | 'error';
-type Control = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
-const initialValues: ContactFormValues = { nombre: '', empresa: '', email: '', cargo: '', servicio: '', presupuesto: '', plazo: '', mensaje: '', website: '' };
-const labels: Record<ContactField, string> = { nombre: 'Nombre', empresa: 'Empresa', email: 'Email de trabajo', cargo: 'Cargo', servicio: '¿Qué necesitás?', presupuesto: 'Presupuesto estimado', plazo: '¿Para cuándo?', mensaje: 'Contanos sobre tu proyecto' };
-const limits: Partial<Record<ContactField, number>> = { nombre: 80, empresa: 120, email: 160, cargo: 80, mensaje: 2000 };
-const requiredFields: readonly ContactField[] = ['nombre', 'empresa', 'email', 'servicio', 'mensaje'];
+type Control = HTMLInputElement | HTMLSelectElement;
+const initialValues: ContactFormValues = { nombre: '', empresa: '', email: '', plazo: '', website: '' };
+const labels: Record<ContactField, string> = { nombre: 'Nombre', empresa: 'Empresa', email: 'Email de trabajo', plazo: '¿Para cuándo?' };
+const limits: Partial<Record<ContactField, number>> = { nombre: 80, empresa: 120, email: 160 };
+const requiredFields: readonly ContactField[] = ['nombre', 'empresa', 'email'];
 const errorMessage = 'No pudimos enviar tu consulta. Probá de nuevo o escribinos por WhatsApp.';
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -127,7 +127,7 @@ export default function ContactForm({ whatsappUrl }: Props) {
         fail(response.status === 400 ? responseErrors(result) : {});
         return;
       }
-      if (!parsed.data.website) track('generate_lead', { servicio: parsed.data.servicio });
+      if (!parsed.data.website) track('generate_lead');
       pendingFocus.current = 'success';
       setAnnouncement('¡Gracias! Recibimos tu consulta. Te respondemos pronto por email.');
       setStatus('success');
@@ -146,18 +146,16 @@ export default function ContactForm({ whatsappUrl }: Props) {
       onChange: (event: ChangeEvent<Control>) => change(fieldName, event.currentTarget.value),
       ref: (element: Control | null) => { if (element) controls.current[fieldName] = element; else delete controls.current[fieldName]; },
     };
-    const options = fieldName === 'servicio' || fieldName === 'presupuesto' || fieldName === 'plazo' ? contactOptions[fieldName] : undefined;
+    const options = fieldName === 'plazo' ? contactOptions.plazo : undefined;
     return (
-      <div className={`contact-field${fieldName === 'mensaje' || fieldName === 'plazo' ? ' contact-field--wide' : ''}`} key={fieldName}>
+      <div className="contact-field" key={fieldName}>
         <label htmlFor={fieldId}>{t(labels[fieldName])}{required && <span aria-hidden="true"> *</span>}</label>
         {options ? (
           <select {...attributes}><option value="">{t(required ? 'Elegí una opción' : 'Opcional')}</option>{options.map((option) => <option key={option} value={option}>{t(option)}</option>)}</select>
-        ) : fieldName === 'mensaje' ? (
-          <textarea {...attributes} rows={5} minLength={20} maxLength={2000} placeholder={t('Contanos qué vende tu empresa, cómo toman pedidos hoy y qué te gustaría resolver.')} />
         ) : (
           <input {...attributes} type={fieldName === 'email' ? 'email' : 'text'} maxLength={limits[fieldName]}
             minLength={fieldName === 'nombre' || fieldName === 'empresa' ? 2 : undefined}
-            autoComplete={fieldName === 'nombre' ? 'name' : fieldName === 'empresa' ? 'organization' : fieldName === 'cargo' ? 'organization-title' : 'email'} />
+            autoComplete={fieldName === 'nombre' ? 'name' : fieldName === 'empresa' ? 'organization' : 'email'} />
         )}
         <div id={`${fieldId}-error`} className="contact-field-error">
           <AnimatePresence initial={false}>{errors[fieldName] && <m.span key="error" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>{t(errors[fieldName])}</m.span>}</AnimatePresence>
@@ -196,7 +194,7 @@ export default function ContactForm({ whatsappUrl }: Props) {
                     </fieldset>
                     <p className="contact-privacy">{t('Usamos tus datos solo para responder tu consulta. Ver')} <a href="/privacidad">{t('Política de privacidad')}</a>.</p>
                     <div className="contact-feedback">
-                      {status === 'error' && <p ref={errorRef} tabIndex={-1}>{t('No pudimos enviar tu consulta. Probá de nuevo o')} {localizedWhatsappUrl ? <a href={localizedWhatsappUrl.href} target="_blank" rel="noopener">{t('escribinos por WhatsApp.')}</a> : t('escribinos por WhatsApp.')}</p>}
+                      <p ref={errorRef} tabIndex={status === 'error' ? -1 : undefined} aria-hidden={status !== 'error' ? true : undefined}>{t('No pudimos enviar tu consulta. Probá de nuevo o')} {localizedWhatsappUrl ? <a href={localizedWhatsappUrl.href} target="_blank" rel="noopener">{t('escribinos por WhatsApp.')}</a> : t('escribinos por WhatsApp.')}</p>
                     </div>
                   </form>
                 )}

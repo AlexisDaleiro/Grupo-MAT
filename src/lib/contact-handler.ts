@@ -13,8 +13,7 @@ export interface ContactRuntime {
 const maxBytes = 10 * 1024;
 const fallbackFrom = 'Grupo MAT <onboarding@resend.dev>';
 const labels = {
-  nombre: 'Nombre', empresa: 'Empresa', email: 'Email de trabajo', cargo: 'Cargo',
-  servicio: 'Servicio', presupuesto: 'Presupuesto estimado', plazo: 'Plazo', mensaje: 'Mensaje',
+  nombre: 'Nombre', empresa: 'Empresa', email: 'Email de trabajo', plazo: 'Plazo',
 } as const;
 
 function reply(status: number, body: object, headers?: Record<string, string>) {
@@ -95,7 +94,7 @@ export async function handleContact(request: Request, runtime: ContactRuntime): 
       headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
         from: secrets.from?.trim() || fallbackFrom, to: [to], reply_to: data.email,
-        subject: `Nuevo lead: ${data.empresa.replace(/[\r\n]/gu, ' ')} · ${data.servicio}`,
+        subject: `Nuevo lead: ${data.empresa.replace(/[\r\n]/gu, ' ')}`,
         ...emailContent(data),
       }),
       signal: AbortSignal.timeout(10_000),

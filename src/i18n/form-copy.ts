@@ -1,16 +1,11 @@
 // Se traducen las etiquetas; los valores enviados a la API se conservan.
 export const formCopy: Readonly<Record<string, string>> = {
-  'Nombre': 'Name', 'Empresa': 'Company', 'Email de trabajo': 'Work email', 'Cargo': 'Job title',
-  '¿Qué necesitás?': 'What do you need?', 'Presupuesto estimado': 'Estimated budget', '¿Para cuándo?': 'When do you need it?',
-  'Contanos sobre tu proyecto': 'Tell us about your project', 'Sitio web': 'Website',
+  'Nombre': 'Name', 'Empresa': 'Company', 'Email de trabajo': 'Work email', '¿Para cuándo?': 'When do you need it?',
+  'Sitio web': 'Website',
   'Los campos con * son obligatorios.': 'Fields marked with * are required.',
   'Datos de tu consulta': 'Your inquiry details', 'Formulario de contacto': 'Contact form',
   'Elegí una opción': 'Choose an option', 'Opcional': 'Optional',
-  'E-commerce B2B': 'B2B e-commerce', 'Landing page': 'Landing page', 'Automatización': 'Automation',
-  'Todavía no lo sé': "I'm not sure yet", 'Hasta USD 1.000': 'Up to USD 1,000',
-  'USD 1.000 – 3.000': 'USD 1,000 – 3,000', 'USD 3.000 – 10.000': 'USD 3,000 – 10,000', 'Más de USD 10.000': 'Over USD 10,000',
   'Lo antes posible': 'As soon as possible', 'En 1 a 3 meses': 'In 1 to 3 months', 'En 3 a 6 meses': 'In 3 to 6 months', 'Sin fecha definida': 'No set date',
-  'Contanos qué vende tu empresa, cómo toman pedidos hoy y qué te gustaría resolver.': 'Tell us what your company sells, how you take orders today, and what you would like to improve.',
   'Enviar consulta': 'Send inquiry', 'Enviando…': 'Sending…',
   'Usamos tus datos solo para responder tu consulta. Ver': 'We only use your information to respond to your inquiry. See our',
   'Política de privacidad': 'Privacy policy',
@@ -24,8 +19,5 @@ export const formCopy: Readonly<Record<string, string>> = {
   'Ingresá tu nombre.': 'Enter your name.', 'Usá entre 2 y 80 caracteres.': 'Use between 2 and 80 characters.',
   'Ingresá el nombre de tu empresa.': 'Enter your company name.', 'Usá entre 2 y 120 caracteres.': 'Use between 2 and 120 characters.',
   'Ingresá un email válido.': 'Enter a valid email address.', 'Usá hasta 160 caracteres.': 'Use up to 160 characters.',
-  'Revisá el cargo.': 'Please check your job title.', 'Usá hasta 80 caracteres.': 'Use up to 80 characters.',
-  'Elegí qué necesitás.': 'Choose what you need.', 'Elegí una opción de presupuesto.': 'Choose a budget option.',
-  'Elegí una opción de plazo.': 'Choose a timeline option.', 'Contanos sobre tu proyecto.': 'Tell us about your project.',
-  'Usá entre 20 y 2000 caracteres.': 'Use between 20 and 2,000 characters.', 'Revisá este campo.': 'Please check this field.',
+  'Elegí una opción de plazo.': 'Choose a timeline option.', 'Revisá este campo.': 'Please check this field.',
 };

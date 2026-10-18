@@ -11,7 +11,7 @@ import { contact } from '@/data/site';
     <div class="contact-grid">
       <div class="contact-copy">
         <h2 id="contact-title" data-reveal><Text text={"¿Tenés un proyecto en mente?"} /></h2>
-        <p class="text-lead" data-reveal><Text text={"Contanos qué necesitás y te respondemos con una propuesta clara."} /></p>
+        <p class="text-lead" data-reveal><Text text={"Dejanos tus datos y te contactamos para hablar de tu proyecto."} /></p>
         <div class="contact-channels" data-reveal>
           {contact.calendlyUrl && <a href={contact.calendlyUrl} target="_blank" rel="noopener"><Icon name="lucide:calendar" size={22} aria-hidden="true" /><span><strong><Text text={"Agendá una llamada"} /></strong><span><Text text={"Elegí el horario que te quede cómodo."} /></span></span><Icon name="lucide:arrow-up-right" size={18} aria-hidden="true" /></a>}
           {contact.whatsappUrl && <a href={contact.whatsappUrl} target="_blank" rel="noopener"><Icon name="simple-icons:whatsapp" size={22} aria-hidden="true" /><span><strong><Text text={"Escribinos por WhatsApp"} /></strong><span>{contact.whatsappLabel}</span></span><Icon name="lucide:arrow-up-right" size={18} aria-hidden="true" /></a>}

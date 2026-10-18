@@ -66,7 +66,7 @@ Los componentes están en `src/components/ui/` y `LanguageToggle` en `src/compon
 
 En los enlaces y el CTA del navbar, `<Text reserveSpace text={texto} />` reserva el espacio de ambas traducciones en una misma celda de grid. La variante inactiva conserva su medida con `visibility: hidden` y queda fuera del nombre accesible. Así los enlaces, el selector ES/EN y el botón de llamada mantienen su posición al cambiar de idioma, sin medir textos con JavaScript ni fijar anchos en píxeles.
 
-Las islas usan `useLanguage`, basado en [useSyncExternalStore de React](https://react.dev/reference/react/useSyncExternalStore), para sincronizar el idioma sin diferirlo respecto al resto de la página. Sus diccionarios pequeños cubren menú, opciones, placeholders, validación y estados del formulario. Cambiar el idioma conserva valores, opciones seleccionadas y estado del envío. Las opciones se presentan traducidas, pero los valores de la API y analítica mantienen sus identificadores originales en español.
+Las islas usan `useLanguage`, basado en [useSyncExternalStore de React](https://react.dev/reference/react/useSyncExternalStore), para sincronizar el idioma sin diferirlo respecto al resto de la página. Sus diccionarios pequeños cubren menú, opciones, validación y estados del formulario. Cambiar el idioma conserva valores, opciones seleccionadas y estado del envío. Las opciones de plazo se presentan traducidas y mantienen su valor original en español en la API. La analítica no recibe datos del formulario.
 
 Las URLs y canonical se conservan. El HTML estático y los datos estructurados mantienen su base en español; `WebSite.inLanguage` declara los dos idiomas disponibles. Al elegir inglés se traducen también el título y los metadatos de la vista. Este selector ofrece inglés en la misma URL; no crea rutas `/en/` indexables por separado. Sin JavaScript se ofrece la versión completa en español y se oculta el selector.
 
@@ -137,9 +137,11 @@ Referencias: [Content Collections de Astro 5](https://v5.docs.astro.build/en/gui
 
 Chrome 155: 72 escenarios (nueve rutas × cuatro anchos de 360, 768, 1024 y 1440px × claro/oscuro), sin overflow horizontal ni errores de consola. Se verificaron títulos, contenido, bandas oscuras, referencias, enlaces internos, anchors, ausencia de URLs e imágenes no configuradas, nota de privacidad y respuesta 404 para rutas inexistentes. También se probaron navegación y formulario estático sin JavaScript, reduced motion y reveals con movimiento normal. Capturas, scripts y reportes quedan fuera del repo. La revisión de otros navegadores, Lighthouse y axe sigue para la Fase 7.
 
-## Formulario y API de la Fase 5
+## Formulario y API
 
-`src/lib/contact-schema.ts` define el schema Zod 4 compartido por la isla y el servidor. Valida al salir de cada campo y al enviar, recorta los textos y limita largos y opciones. Las opciones están en `src/data/site.ts`; los presupuestos son provisorios. Los errores tienen espacio reservado, `aria-describedby` y `aria-invalid`; el foco va al primer campo inválido o al mensaje general. Los estados se anuncian con una región `aria-live` estable. La altura del panel se conserva durante las transiciones de `AnimatePresence mode="wait"`, incluida la confirmación de éxito, sin animar dimensiones.
+Por pedido posterior del cliente, el formulario conserva solo nombre, empresa, email de trabajo y plazo, en ES/EN. Los tres primeros son obligatorios; el plazo sigue siendo opcional. En mobile se muestran en una columna; desde 768px, en dos filas de dos campos. El honeypot permanece oculto. La API y el correo incluyen únicamente esos cuatro datos; el asunto es `Nuevo lead: {empresa}`. Cargo, servicio, presupuesto y mensaje se retiraron del formulario y del schema; si llegan como claves adicionales, se descartan.
+
+`src/lib/contact-schema.ts` define el schema Zod 4 compartido por la isla y el servidor. Valida al salir de cada campo y al enviar, recorta los textos y limita largos y opciones. Las opciones de plazo están en `src/data/site.ts`. Los errores tienen espacio reservado, `aria-describedby` y `aria-invalid`; el foco va al primer campo inválido o al mensaje general. El mensaje general reserva su altura real con `visibility: hidden` y `aria-hidden` mientras no hay error, en lugar de un bloque vacío fijo de 128px. Los estados se anuncian con una región `aria-live` estable. La altura del panel se conserva durante las transiciones de `AnimatePresence mode="wait"`, incluida la confirmación de éxito, sin animar dimensiones.
 
 `ContactFormBlock.astro` sirve HTML y CSS desde el servidor y monta la isla con `client:visible`. Los controles quedan deshabilitados hasta hidratar para impedir un POST nativo que exponga datos en una navegación sin JavaScript. El bloque `noscript` ofrece WhatsApp. El formulario completo no recibe un reveal con blur; se animan sus cambios de estado con fade y blur de 4px, desactivado con reduced motion. El envío bloquea intentos simultáneos, permite reintentar tras fallas y conserva los valores. Los tipos de React actuales usan `SubmitEvent`.
 
@@ -149,7 +151,7 @@ Tras validar, un honeypot con cualquier valor responde éxito sin leer secretos,
 
 **Adaptación de Astro 5:** su módulo `astro:env/server` valida anticipadamente los secretos declarados como obligatorios, incluso usando `getSecret()`. Por eso key, destinatario y remitente admiten ausencia en el schema, y la API exige los valores necesarios al momento de enviar. Así funcionan el desarrollo sin credenciales, la validación y el honeypot sin producir errores de carga del módulo. El destinatario sigue siendo obligatorio para un envío real.
 
-`track()` es seguro si `gtag` no existe o falla. El módulo global delega clicks de WhatsApp y Calendly, incluidos links de islas. Solo el éxito del formulario emite `generate_lead`, con el servicio validado; el honeypot no lo emite. Los eventos propios no incluyen nombres, empresas, emails, mensajes ni URLs. La Fase 6 conecta estos eventos con GA4 cuando está configurado.
+`track()` es seguro si `gtag` no existe o falla. El módulo global delega clicks de WhatsApp y Calendly, incluidos links de islas. Solo el éxito del formulario emite `generate_lead`, sin parámetros del formulario; el honeypot no lo emite. El servicio dejó de recolectarse y no se inventa una categoría para analítica. Los eventos propios no incluyen nombres, empresas, emails, plazos ni URLs. GA4 recibe estos eventos solo cuando está configurado.
 
 Referencias: [endpoints de Astro 5](https://v5.docs.astro.build/en/guides/endpoints/), [getSecret](https://v5.docs.astro.build/en/reference/modules/astro-env/), [Zod](https://zod.dev/api), [AnimatePresence](https://motion.dev/docs/react-animate-presence) y [API REST de Resend](https://resend.com/docs/api-reference/emails/send-email).
 
@@ -288,4 +290,4 @@ Se corrigieron los contrastes persistentes del hero, pasos y nav. La revisión v
 - Confirmar Core Web Vitals de campo, entrega real de Resend y recepción de eventos en GA4 al configurar y publicar.
 - Evaluar una CSP después de la v1; queda pendiente por la combinación de Partytown, GA y scripts inline.
 
-El dominio propio, Calendly, GA4, redes sociales, fotos del equipo y capturas de DISTRICO siguen pendientes del cliente. Los presupuestos del formulario son provisorios. La política de privacidad requiere revisión legal antes de publicar.
+El dominio propio, Calendly, GA4, redes sociales, fotos del equipo y capturas de DISTRICO siguen pendientes del cliente. La política de privacidad requiere revisión legal antes de publicar.

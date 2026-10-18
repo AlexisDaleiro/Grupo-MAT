@@ -1,5 +1,20 @@
 # QA de Grupo MAT — Fase 7
 
+## Formulario reducido a cuatro campos
+
+Por pedido del cliente, Home y contacto conservan solo nombre, empresa, email de trabajo y plazo en ES/EN. Los tres primeros son obligatorios y el plazo sigue siendo opcional. Desde 768px se muestran en dos filas de dos campos. Se retiraron cargo, servicio, presupuesto y mensaje de la interfaz, validación y correo; el honeypot permanece oculto. `generate_lead` ya no incluye servicio ni datos del formulario. La política de privacidad y el texto de invitación se ajustaron al flujo actual.
+
+Verificación del build con SHA-256 `b5531856da0d36ca1e28b05231bd89667780283d5bda2f5aa8ffd853c153bf36`:
+
+- `npx astro check`: 62 archivos, 0 errores, 0 warnings y 0 hints. `npm run build`: correcto, nueve páginas estáticas y API; persisten únicamente los avisos conocidos de comentarios de Zod.
+- 49 casos de schema y handler con Resend simulado: envío con los tres datos obligatorios, cuatro opciones de plazo, campos retirados descartados, límites, validación, origen, honeypot, configuración, HTML escapado y fallas del proveedor. Cuatro comprobaciones adicionales del endpoint compilado: datos inválidos devuelven 400 y honeypot válido devuelve 200 sin enviar.
+- 32 escenarios de navegador aprobados en ES/EN: Home y contacto en Chrome 155 a 360, 768, 1024 y 1440px; Firefox 155 y WebKit 26.5 para Windows a 360 y 1440px. Incluyen exactamente cuatro campos visibles, grilla, obligatoriedad, ausencia de overflow, validación y foco, valores conservados al elegir idioma, payload de cinco claves (cuatro campos y honeypot), éxito y un solo evento `generate_lead` sin parámetros personales. Se probaron además errores 400/500 y reintentos a 360 y 1440px en ambos idiomas.
+- El mensaje general reserva su altura real mientras está oculto, reemplazando el bloque fijo de 128px. Se comprobó que los errores de campo y de envío conservan la altura de la tarjeta, con tolerancia de 1px por redondeo.
+- Axe-core 4.14.0 sobre el formulario: cuatro estados ES/EN a 360 y 1440px, ninguna violación detectada. Cuatro vistas sin JavaScript aprobadas en Home y contacto a esos anchos: cuatro campos deshabilitados y alternativa de WhatsApp visible. Se revisaron visualmente las capturas del formulario en inglés a 360 y 1440px.
+- Seis comprobaciones de analítica con `gtag` simulado: eventos sin datos del formulario y tolerancia a `gtag` ausente o fallando. No se enviaron emails reales ni eventos a Google.
+
+Evidencia fuera del repo: `compact-form-api-tests.json`, `compact-form-smoke.json`, `compact-form-ui-*.json` y capturas `compact-form-*.png`. Los apartados siguientes corresponden a builds anteriores; no se repitieron Lighthouse ni traces de scroll para este cambio. Safari real y los pendientes de rendimiento anteriores siguen abiertos.
+
 ## Navbar estable al cambiar de idioma
 
 Se reservó el espacio de las dos traducciones en los enlaces y el CTA del navbar. La variante inactiva participa en el tamaño de la celda de grid, pero queda oculta visualmente y para las tecnologías de asistencia. No se agregó JavaScript ni dependencias.
