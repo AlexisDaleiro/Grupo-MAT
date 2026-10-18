@@ -18,13 +18,13 @@ const currentPath = Astro.url.pathname.replace(/\/$/u, '') || '/';
     <Logo />
     <nav class="nav-desktop" aria-label="Navegación principal" data-label-en="Main navigation">
       {navigation.map((item) => (
-        <a href={item.href} data-nav-link aria-current={currentPath === item.href ? 'page' : undefined}><Text text={item.label} /></a>
+        <a href={item.href} data-nav-link aria-current={currentPath === item.href ? 'page' : undefined}><Text text={item.label} reserveSpace /></a>
       ))}
     </nav>
     <div class="nav-controls">
       <LanguageToggle />
       <div class="nav-appointment">
-        <Button href={contact.appointmentUrl} target={contact.calendlyUrl ? '_blank' : undefined}><Text text={"Agendar una llamada"} /></Button>
+        <Button href={contact.appointmentUrl} target={contact.calendlyUrl ? '_blank' : undefined}><Text text={"Agendar una llamada"} reserveSpace /></Button>
       </div>
       <div class="nav-mobile">
         <MobileMenu navigation={navigation} currentPath={currentPath} appointmentUrl={contact.appointmentUrl} externalAppointment={Boolean(contact.calendlyUrl)} client:media="(max-width: 1023px)" />
@@ -55,7 +55,7 @@ const currentPath = Astro.url.pathname.replace(/\/$/u, '') || '/';
   .nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; height: 100%; }
   .nav-controls { display: flex; align-items: center; gap: 0.625rem; }
   .nav-desktop { display: none; align-items: center; gap: 1.25rem; }
-  .nav-desktop a { display: inline-flex; align-items: center; min-height: 44px; color: var(--fg-muted); font-size: 0.875rem; text-decoration: none; }
+  .nav-desktop a { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; color: var(--fg-muted); font-size: 0.875rem; text-align: center; text-decoration: none; }
   .nav-desktop a:hover, .nav-desktop a[aria-current] { color: var(--fg); }
   .site-header[data-scrolled] .nav-desktop a { color: var(--fg); }
   .nav-appointment { display: none; }

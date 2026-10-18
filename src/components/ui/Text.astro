@@ -1,6 +1,17 @@
 ---
 import { en } from '@/i18n/english';
-interface Props { text: string; english?: string }
-const { text, english = en(text) } = Astro.props;
+interface Props { text: string; english?: string; reserveSpace?: boolean }
+const { text, english = en(text), reserveSpace = false } = Astro.props;
 ---
-{english === text ? text : <><span data-language="es" lang="es-UY">{text}</span><span data-language="en" lang="en">{english}</span></>}
+{english === text ? text : reserveSpace ? (
+  <span class="translation-reserved">
+    <span data-language="es" data-language-reserved lang="es-UY">{text}</span>
+    <span data-language="en" data-language-reserved lang="en">{english}</span>
+  </span>
+) : <><span data-language="es" lang="es-UY">{text}</span><span data-language="en" lang="en">{english}</span></>}
+
+<style>
+  /* Both variants size the same cell; only the active language is visible. */
+  .translation-reserved { display: inline-grid; }
+  .translation-reserved > span { grid-area: 1 / 1; }
+</style>

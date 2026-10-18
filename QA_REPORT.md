@@ -1,5 +1,18 @@
 # QA de Grupo MAT — Fase 7
 
+## Navbar estable al cambiar de idioma
+
+Se reservó el espacio de las dos traducciones en los enlaces y el CTA del navbar. La variante inactiva participa en el tamaño de la celda de grid, pero queda oculta visualmente y para las tecnologías de asistencia. No se agregó JavaScript ni dependencias.
+
+Verificación del build con SHA-256 `9a2b8645c87795da3d8573e4d851fe8853112c6d07abc96e1502215ca0378a12`:
+
+- Antes del ajuste se midió un desplazamiento máximo de 70,77px en Chrome al alternar ES/EN. Después: 0px en los 60 escenarios de Chrome 155, Firefox 155 y WebKit 26.5 para Windows. Incluyen Home y contacto a 320, 360, 768, 1024 y 1440px, arriba y con 320px de scroll, cambiando a inglés y volviendo a español.
+- Sin superposiciones ni overflow horizontal. Los nombres accesibles de los enlaces y el CTA contienen solo el idioma activo. Se revisaron visualmente las capturas de Chrome a 360 y 1024px.
+- Axe-core 4.14.0 sobre el navbar: cuatro estados ES/EN a 360 y 1024px, ninguna violación detectada. Sin JavaScript: navegación española y menú alternativo comprobados a 360 y 1024px.
+- `npx astro check`: 62 archivos, 0 errores, 0 warnings y 0 hints. `npm run build`: correcto; persisten los avisos conocidos de comentarios de Zod.
+
+Evidencia fuera del repo: `navbar-baseline-chrome.json`, `navbar-verify-*.json`, `navbar-accessibility.json` y capturas `navbar-*.png`. El QA de idiomas y de rendimiento que sigue corresponde a builds anteriores; no se repitieron Lighthouse ni los traces de scroll para este ajuste. Safari real sigue pendiente.
+
 ## Selector de idioma ES/EN
 
 El cliente reemplazó el cambio de tema por un selector de español e inglés. La paleta actual se conserva con base clara y bandas ciruela. Español es el idioma inicial; la elección se guarda y se sincroniza entre pestañas. Se tradujeron las nueve rutas, navegación, FAQ, contenido de DISTRICO, etiquetas accesibles, metadatos de la vista, WhatsApp y estados del formulario.

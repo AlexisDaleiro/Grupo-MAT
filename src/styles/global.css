@@ -94,9 +94,14 @@
 }
 
 @layer base {
-  :root:not([data-language="en"]) [data-language="en"],
-  :root[data-language="en"] [data-language="es"] {
+  :root:not([data-language="en"]) [data-language="en"]:not([data-language-reserved]),
+  :root[data-language="en"] [data-language="es"]:not([data-language-reserved]) {
     display: none !important;
+  }
+
+  :root:not([data-language="en"]) [data-language="en"][data-language-reserved],
+  :root[data-language="en"] [data-language="es"][data-language-reserved] {
+    visibility: hidden;
   }
 
   html {
