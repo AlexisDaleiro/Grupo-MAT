@@ -15,7 +15,7 @@ function focusTarget(target: HTMLElement) {
 }
 
 try {
-  media.add('(prefers-reduced-motion: no-preference)', () => {
+  media.add('(prefers-reduced-motion: no-preference)', (context) => {
     let anchorTarget: HTMLElement | undefined;
     // Lenis 1.3.27 ya descuenta scroll-margin-top: el offset adicional es cero.
     const lenis = new Lenis({ lerp: 0.09, anchors: { offset: 0, onComplete: () => {
@@ -70,10 +70,20 @@ try {
 
     const hero = document.querySelector<HTMLElement>('[data-hero]');
     const heroContent = hero?.querySelector<HTMLElement>('[data-hero-content]');
-    if (hero && heroContent) gsap.to(heroContent, {
-      opacity: 0.3, y: -40, ease: 'none',
-      scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true },
-    });
+    const startHeroMotion = () => {
+      if (!hero || !heroContent || scrollY <= 0) return;
+      window.removeEventListener('scroll', startHeroMotion);
+      // Registra también el tween creado más tarde para revertirlo con reduced motion.
+      context.add(() => gsap.to(heroContent, {
+        // El mínimo de 0.9 conserva AA en el texto pequeño mientras sigue visible.
+        opacity: 0.9, y: -40, ease: 'none',
+        scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true },
+      }));
+    };
+    if (hero && heroContent) {
+      startHeroMotion();
+      if (scrollY <= 0) window.addEventListener('scroll', startHeroMotion, { passive: true });
+    }
 
     const projectVisual = document.querySelector<HTMLElement>('[data-project-visual]');
     const projectImage = projectVisual?.querySelector<HTMLElement>('[data-project-image]');
@@ -93,13 +103,14 @@ try {
         scrollTrigger: { trigger: steps, start: 'top center', end: 'bottom center', scrub: true },
       });
       steps.querySelectorAll<HTMLElement>('[data-process-step]').forEach((step) => gsap.fromTo(step,
-        { opacity: 0.4 },
+        { opacity: 0.9 },
         { opacity: 1, ease: 'none', scrollTrigger: { trigger: step, start: 'top 80%', end: 'top center', scrub: true } },
       ));
     });
 
     return () => {
       desktopMotion.revert();
+      window.removeEventListener('scroll', startHeroMotion);
       document.removeEventListener('click', onAnchor);
       window.removeEventListener('menu:toggle', onMenu);
       gsap.ticker.remove(tick);

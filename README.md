@@ -4,7 +4,7 @@ Sitio de Grupo MAT, agencia de software B2B de Uruguay. Astro con generación es
 
 ## Estado
 
-Fase 6: SEO, datos estructurados, imagen para compartir y GA4 condicional con Partytown. La Home y las páginas internas comparten el formulario funcional. Las páginas siguen siendo estáticas; solo `/api/contact` se ejecuta por solicitud. El QA final corresponde a la Fase 7, con aprobación entre fases.
+Fase 7: QA local de rendimiento, accesibilidad y navegadores. La Home y las páginas internas comparten el formulario funcional. Las páginas siguen siendo estáticas; solo `/api/contact` se ejecuta por solicitud. SEO y GA4 condicional con Partytown están implementados. Los resultados y límites del QA se documentan en `QA_REPORT.md`.
 
 ## Desarrollo local
 
@@ -30,7 +30,20 @@ Antes de cerrar cada fase, ejecutá `npx astro check` y `npm run build`.
 
 `src/styles/global.css` define los tokens y la variante `dark:` de Tailwind v4. Los componentes usan `canvas`, `surface`, `surface-2`, `line`, `fg`, `fg-muted` y los tokens de marca. El texto pequeño en acento usa `brand-text`; `brand` queda para texto grande, bordes e íconos. El contenido de una banda oscura se envuelve con `data-theme="dark"` y las clases `bg-canvas text-fg`.
 
-Geist y Geist Mono se sirven desde sus archivos variables latin de Fontsource con `font-display: swap`. Solo se precarga el woff2 de Geist. El tema se resuelve en el `<head>` antes de pintar: primero la elección guardada y después la preferencia del sistema. `ThemeToggle` guarda la selección, sincroniza sus instancias y actualiza `theme-color`, `aria-label` y `aria-pressed`. Sin acceso a almacenamiento sigue funcionando; sin JavaScript el botón queda oculto.
+### Paleta actual
+
+El cliente reemplazó la paleta azul de la especificación por Discreet Palette. `MEGA_PROMPT.md` se conserva intacto; esta elección posterior define los colores de la implementación.
+
+| Color base | Uso |
+| --- | --- |
+| `#800000` | Marca, botones y enlaces sobre fondos claros; favicon. |
+| `#BB8376` | Botones sobre oscuro, detalles y glows en rosa tierra. |
+| `#FFF4EE` | Fondo claro y texto principal sobre oscuro. |
+| `#582B39` | Fondo oscuro, bandas de marca y texto principal sobre claro. |
+
+Las superficies, hovers y colores secundarios usan tonos derivados de estos cuatro colores para conservar contraste. Los botones oscuros combinan rosa tierra con tinta `#2C131B`; el texto secundario usa `#F2D6CC`. Los inputs tienen un token `field-border` propio para mantener un borde distinguible. Hero, grids, spotlight, placeholders, menú, theme-color y recursos de marca comparten esta paleta.
+
+Geist y Geist Mono se sirven desde sus archivos variables latin de Fontsource con `font-display: swap`. Solo se precarga el woff2 de Geist, con prioridad alta. El tema se resuelve en el `<head>` antes de pintar: primero la elección guardada y después la preferencia del sistema. `ThemeToggle` guarda la selección, sincroniza sus instancias y actualiza `theme-color`, `aria-label` y `aria-pressed`. Sin acceso a almacenamiento sigue funcionando; sin JavaScript el botón queda oculto.
 
 | Componente | Uso |
 | --- | --- |
@@ -49,11 +62,11 @@ Los componentes están en `src/components/ui/` y el toggle en `src/components/la
 
 `BaseLayout` acepta `title`, `description`, `image` (`src`, dimensiones y `alt`), `canonical`, `breadcrumbs`, `service`, `noindex` y `hasHero`. Cuando la página comienza con una banda oscura, pasá `hasHero` y marcá la banda con `data-hero data-theme="dark"`; así el nav ya tiene el tema correcto antes de cargar los scripts. Sin hero, el contenido deja 64px para el nav fijo.
 
-La navegación usa los links de `src/data/site.ts`. El nav cambia a cristal después de 8px y observa el hero con un offset de 64px. Las bandas mantienen sus tokens oscuros aunque el resto de la página esté en claro. El footer muestra únicamente los canales y redes configurados; Calendly sin URL usa `/contacto` en el CTA del nav.
+La navegación usa los links de `src/data/site.ts`. El nav cambia a cristal después de 8px y observa el hero con un offset de 64px. Con cristal, los links desktop usan `fg` para conservar contraste sobre bandas oscuras en tema claro. Las bandas mantienen sus tokens oscuros aunque el resto de la página esté en claro. El footer muestra únicamente los canales y redes configurados; Calendly sin URL usa `/contacto` en el CTA del nav.
 
 `MobileMenu` usa `client:media="(max-width: 1023px)"`; `ContactForm` usa `client:visible`. En desktop, React y Motion no se descargan hasta que el formulario entra en pantalla. El menú usa un diálogo nativo, focus trap, cierre con Escape o enlaces, restauración de foco y bloqueo de scroll hasta finalizar la salida. Sin JavaScript, queda disponible una navegación móvil con `details` nativo. Ambas islas usan `LazyMotion`, `domAnimation`, componentes `m.*` desde `motion/react-m` y `reducedMotion="user"`, con tweens sin rebote.
 
-`src/scripts/motion.ts` se importa una vez desde el layout. Lenis se sincroniza con el ticker de GSAP y ScrollTrigger, con touch nativo. En Lenis 1.3.27, `scrollTo` ya descuenta `scroll-margin-top`; por eso `anchors` usa offset adicional cero y los destinos conservan los 80px del CSS. Los reveals limpian transform, opacity, filter y will-change al terminar. Si vence el failsafe de 3 segundos, la carga tardía del módulo no vuelve a ocultar contenido ya visible. Al activar reduced motion se destruye Lenis y todo queda visible; al desactivarlo se reinicia el scroll sin repetir reveals.
+`src/scripts/motion.ts` se importa una vez desde el layout después de `load` y dos `requestAnimationFrame`, para priorizar los recursos iniciales y su pintado antes de iniciar GSAP. Lenis se sincroniza con el ticker de GSAP y ScrollTrigger, con touch nativo. En Lenis 1.3.27, `scrollTo` ya descuenta `scroll-margin-top`; por eso `anchors` usa offset adicional cero y los destinos conservan los 80px del CSS. Los reveals limpian transform, opacity, filter y will-change al terminar. Si falla la importación o vence el failsafe de 3 segundos, el contenido queda visible; una carga tardía del módulo no vuelve a ocultarlo. Al activar reduced motion se destruye Lenis y todo queda visible; al desactivarlo se reinicia el scroll sin repetir reveals.
 
 | Marca de HTML | Uso en las próximas secciones |
 | --- | --- |
@@ -78,7 +91,7 @@ Sin GA y sin hidratar islas en desktop, el JS inicial medido fue de **55.395 byt
 
 Las secciones están en `src/components/sections/`: hero, stack, servicios, diferenciales, DISTRICO, proceso, equipo, FAQ y CTA final. Nav, footer y WhatsApp se reutilizan desde el layout. Stack, tarjetas de servicios, diferenciales, pasos, equipo y FAQ se editan en `src/data/site.ts`. Los integrantes admiten `photo` y `linkedin` opcionales; en producción se muestran iniciales sin el badge de desarrollo. No se inventan fotos, logos ni capturas.
 
-El hero usa entradas CSS con los delays de la especificación, grid y glow de fondo. Su contenido pierde opacidad y sube 40px al scrollear. El visual de DISTRICO reduce su escala de 1.06 a 1 dentro de un recorte. En desktop, el proceso tiene una introducción sticky, una línea con `scaleY` y pasos que ganan opacidad al llegar al centro. En mobile conserva una lista con reveals. Todo el scroll se controla desde el módulo global existente, dentro de `gsap.matchMedia()`; reduced motion revierte las animaciones.
+El hero conserva las entradas CSS de su contenido secundario, el grid y un glow radial. Los h1 y el lead de `PageHeader` están visibles desde el HTML para proteger el LCP. El efecto del hero se inicia con el primer scroll, sube hasta 40px y conserva opacidad mínima de 0.9. El visual de DISTRICO reduce su escala de 1.06 a 1 dentro de un recorte. En desktop, el proceso tiene una introducción sticky, una línea con `scaleY` y pasos que pasan de opacidad 0.9 a 1 al llegar al centro. Estos mínimos reemplazan 0.3 y 0.4 tras detectar contraste insuficiente con el texto todavía visible. En mobile conserva una lista con reveals. Todo el scroll se controla desde el módulo global, dentro de `gsap.matchMedia()`; los tweens creados después se agregan al mismo contexto para que reduced motion también los revierta.
 
 La franja de tecnologías usa dos listas iguales y un ciclo CSS de 40 segundos, con pausa en hover. La copia está oculta para tecnologías asistivas; con reduced motion se muestra una sola lista estática. La FAQ usa `details`/`summary` y mejora progresivamente con `::details-content`; sin soporte abre de forma nativa.
 
@@ -245,9 +258,20 @@ Referencia: [crear una regla de rate limiting en Cloudflare](https://developers.
 
 `MEGA_PROMPT.md` y `.token-optimizer/` son locales y están ignorados a propósito. No los modifiques ni los agregues a commits. `.env`, sus variantes, los archivos locales de secretos de Cloudflare, `node_modules/`, `.astro/`, `.wrangler/` y `dist/` también están ignorados; `.env.example` sí se versiona.
 
-## Pendientes de fases siguientes
+## QA final de la Fase 7
 
-- QA de rendimiento, accesibilidad y navegadores (Fase 7).
+Los resultados de rendimiento de esta sección corresponden al build anterior al cambio de paleta. El ajuste de colores tiene su verificación específica al inicio de `QA_REPORT.md`; no se reutilizan estos puntajes como una nueva medición.
+
+El reporte completo está en [QA_REPORT.md](QA_REPORT.md): Lighthouse mobile/desktop sobre Home, e-commerce B2B y contacto; 144 escenarios funcionales en Chrome, Firefox y WebKit; 15 escenarios de regresión final; axe en 50 estados, sin violaciones detectadas; y traces de scroll e interacciones. Los reportes detallados, scripts y capturas quedan fuera del repo. Tailwind excluye README y el reporte de sus fuentes para que editar documentación no agregue utilidades al CSS del sitio.
+
+Se corrigieron los contrastes persistentes del hero, pasos y nav. La revisión visual de WebKit en Windows encontró una limitación de pesos de fuentes variables que debe verificarse en Safari real. El JS inicial de desktop quedó en **56.861 bytes gzip** sin islas hidratadas. No se registraron tareas de más de 50ms en los traces de scroll; la interacción máxima local fue de 120ms en mobile con CPU 4×. También se comprobó el contenido visible con el módulo de movimiento bloqueado o tardío.
+
+`npx astro check` y `npm run build` pasan. Los puntajes medianos mobile (Performance/Accessibility/Best Practices/SEO) son **98/100/100/100** en Home y **99/100/100/100** en servicio y contacto; desktop da **100/100/100/100** en las tres páginas. El LCP mediano mobile es **2,1413s** en Home y **2,0050s** en e-commerce B2B: ambos quedan fuera del objetivo estricto `< 2s`. Contacto da **1,8573s**. Los rangos de las tres muestras y los demás valores figuran en el reporte; no se marcan todos los presupuestos como cumplidos.
+
+## Pendientes de validación y publicación
+
+- Validar Safari real y reducir el LCP mobile de Home y e-commerce B2B por debajo de 2s con margen estable.
+- Confirmar Core Web Vitals de campo, entrega real de Resend y recepción de eventos en GA4 al configurar y publicar.
 - Evaluar una CSP después de la v1; queda pendiente por la combinación de Partytown, GA y scripts inline.
 
 El dominio propio, Calendly, GA4, redes sociales, fotos del equipo y capturas de DISTRICO siguen pendientes del cliente. Los presupuestos del formulario son provisorios. La política de privacidad requiere revisión legal antes de publicar.

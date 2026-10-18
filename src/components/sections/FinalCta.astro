@@ -23,7 +23,7 @@ import { contact } from '@/data/site';
 
 <style>
   .final-cta { position: relative; isolation: isolate; overflow: hidden; background: var(--canvas); color: var(--fg); }
-  .final-cta::before { content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; background-image: linear-gradient(rgb(148 163 184 / .035) 1px, transparent 1px), linear-gradient(90deg, rgb(148 163 184 / .035) 1px, transparent 1px); background-size: 64px 64px; mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 40%, transparent 100%); }
+  .final-cta::before { content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; background-image: linear-gradient(rgb(var(--grid-rgb) / .035) 1px, transparent 1px), linear-gradient(90deg, rgb(var(--grid-rgb) / .035) 1px, transparent 1px); background-size: 64px 64px; mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 40%, transparent 100%); }
   .contact-grid { display: grid; align-items: start; gap: 3rem; }
   .contact-copy { display: grid; gap: 1.5rem; }
   .contact-channels { display: grid; gap: 1rem; margin-top: .5rem; }

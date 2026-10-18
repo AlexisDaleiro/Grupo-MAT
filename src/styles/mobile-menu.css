@@ -29,7 +29,7 @@
   overscroll-behavior: contain;
 }
 
-.mobile-menu-panel::backdrop { background: rgb(15 23 42 / 0.5); }
+.mobile-menu-panel::backdrop { background: rgb(44 19 27 / 0.5); }
 .mobile-menu-surface { width: 100%; height: 100%; overflow-y: auto; padding: 0 1.25rem 2rem; background: var(--canvas); color: var(--fg); overscroll-behavior: contain; }
 .mobile-menu-top { display: flex; align-items: center; justify-content: space-between; min-height: 64px; }
 .mobile-menu-brand { display: inline-flex; align-items: center; min-height: 44px; color: var(--fg); font-size: 18px; font-weight: 500; letter-spacing: -0.02em; text-decoration: none; }

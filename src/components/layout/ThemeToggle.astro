@@ -35,7 +35,7 @@ const { class: className, ...attributes } = Astro.props;
   function applyTheme(theme: Theme) {
     root.dataset.theme = theme;
     document.querySelector('meta[name="theme-color"]')?.setAttribute(
-      'content', theme === 'dark' ? '#0F172A' : '#F8FAFC',
+      'content', theme === 'dark' ? '#582B39' : '#FFF4EE',
     );
     toggles.forEach((toggle) => {
       toggle.setAttribute('aria-label', `Cambiar a modo ${theme === 'dark' ? 'claro' : 'oscuro'}`);

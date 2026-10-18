@@ -11,8 +11,8 @@ const { title, lead, eyebrow, appointment = false } = Astro.props;
   <Container>
     <div class="page-header__content">
       {eyebrow && <p class="eyebrow" data-reveal>{eyebrow}</p>}
-      <h1 id="page-title" data-reveal>{title}</h1>
-      {lead && <p class="text-lead" data-reveal>{lead}</p>}
+      <h1 id="page-title">{title}</h1>
+      {lead && <p class="text-lead">{lead}</p>}
       {Astro.slots.has('badges') && <div class="page-header__badges" data-reveal><slot name="badges" /></div>}
       {appointment && <div data-reveal><Button href={contact.appointmentUrl} target={contact.calendlyUrl ? '_blank' : undefined} arrow>Agendar una llamada</Button></div>}
       <slot />
@@ -22,7 +22,7 @@ const { title, lead, eyebrow, appointment = false } = Astro.props;
 
 <style>
   .page-header { position: relative; isolation: isolate; overflow: hidden; padding-block: 9rem 6rem; background: var(--canvas); color: var(--fg); }
-  .page-header::before { content: ''; position: absolute; z-index: -1; inset: 0; pointer-events: none; background-image: linear-gradient(rgb(148 163 184 / .07) 1px, transparent 1px), linear-gradient(90deg, rgb(148 163 184 / .07) 1px, transparent 1px); background-size: 64px 64px; mask-image: radial-gradient(ellipse 70% 80% at 50% 0%, #000 40%, transparent 100%); }
+  .page-header::before { content: ''; position: absolute; z-index: -1; inset: 0; pointer-events: none; background-image: linear-gradient(rgb(var(--grid-rgb) / .07) 1px, transparent 1px), linear-gradient(90deg, rgb(var(--grid-rgb) / .07) 1px, transparent 1px); background-size: 64px 64px; mask-image: radial-gradient(ellipse 70% 80% at 50% 0%, #000 40%, transparent 100%); }
   .page-header__content { display: grid; justify-items: start; gap: 1.5rem; max-width: 56rem; }
   h1 { max-width: 18ch; overflow-wrap: break-word; }
   .page-header__badges { display: flex; flex-wrap: wrap; gap: .5rem; }

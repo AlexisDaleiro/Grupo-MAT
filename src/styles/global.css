@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@source not "../../README.md";
+@source not "../../QA_REPORT.md";
 
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
@@ -21,37 +23,51 @@
 :root,
 [data-theme="light"] {
   color-scheme: light;
-  --canvas: #f8fafc;
-  --surface: #ffffff;
-  --surface-2: #f1f5f9;
-  --line: #e2e8f0;
-  --fg: #1e293b;
-  --fg-muted: #475569;
-  --feedback-error: #b91c1c;
-  --brand: #0284c7;
-  --brand-strong: #0369a1;
-  --brand-strong-hover: #075985;
-  --brand-text: #0369a1;
-  --on-brand: #ffffff;
-  --spot-border: rgb(2 132 199 / 0.45);
-  --spot-fill: rgb(2 132 199 / 0.06);
-  --shadow-card: 0 1px 2px rgb(15 23 42 / 0.04), 0 8px 24px -12px rgb(15 23 42 / 0.12);
+  --canvas: #fff4ee;
+  --surface: #fffaf7;
+  --surface-2: #f2e2db;
+  --line: #d6b7ac;
+  --field-border: #a16a62;
+  --fg: #582b39;
+  --fg-muted: #7b5057;
+  --feedback-error: #800000;
+  --brand: #800000;
+  --brand-strong: #800000;
+  --brand-strong-hover: #650000;
+  --brand-text: #800000;
+  --on-brand: #fff4ee;
+  --brand-rgb: 128 0 0;
+  --grid-rgb: 88 43 57;
+  --accent-start: #800000;
+  --accent-end: #582b39;
+  --spot-border: rgb(128 0 0 / 0.45);
+  --spot-fill: rgb(187 131 118 / 0.10);
+  --shadow-card: 0 1px 2px rgb(88 43 57 / 0.04), 0 8px 24px -12px rgb(88 43 57 / 0.12);
   interpolate-size: allow-keywords;
 }
 
 [data-theme="dark"] {
   color-scheme: dark;
-  --canvas: #0f172a;
-  --surface: #182234;
-  --surface-2: #1e293b;
-  --line: rgb(148 163 184 / 0.14);
-  --fg: #f8fafc;
-  --fg-muted: #94a3b8;
-  --feedback-error: #fca5a5;
-  --brand-text: #38bdf8;
-  --spot-border: rgb(56 189 248 / 0.55);
-  --spot-fill: rgb(2 132 199 / 0.12);
-  --shadow-card: inset 0 1px 0 rgb(255 255 255 / 0.04);
+  --canvas: #582b39;
+  --surface: #673744;
+  --surface-2: #6f3b48;
+  --line: rgb(187 131 118 / 0.38);
+  --field-border: #bb8376;
+  --fg: #fff4ee;
+  --fg-muted: #f2d6cc;
+  --feedback-error: #ffd2c7;
+  --brand: #d6a99d;
+  --brand-strong: #bb8376;
+  --brand-strong-hover: #d6a99d;
+  --brand-text: #f2d6cc;
+  --on-brand: #2c131b;
+  --brand-rgb: 187 131 118;
+  --grid-rgb: 242 214 204;
+  --accent-start: #fff4ee;
+  --accent-end: #e8c5ba;
+  --spot-border: rgb(214 169 157 / 0.55);
+  --spot-fill: rgb(187 131 118 / 0.12);
+  --shadow-card: inset 0 1px 0 rgb(255 244 238 / 0.06);
 }
 
 @theme inline {

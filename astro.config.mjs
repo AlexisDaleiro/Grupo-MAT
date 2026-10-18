@@ -14,6 +14,8 @@ const publicEnvironment = loadEnv(process.env.NODE_ENV ?? 'development', process
 export default defineConfig({
   site: 'https://grupo-mat.pages.dev',
   output: 'static',
+  // CSS de cada página en el HTML para reducir el bloqueo del primer render.
+  build: { inlineStylesheets: 'always' },
   adapter: cloudflare({ imageService: 'compile' }),
 
   env: {

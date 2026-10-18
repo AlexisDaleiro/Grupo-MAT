@@ -5,7 +5,7 @@
 .contact-field { min-width: 0; }
 .contact-field label { display: block; margin-bottom: .5rem; font-size: .875rem; font-weight: 500; line-height: 1.5; }
 .contact-field label span { color: var(--brand-text); }
-.contact-field input, .contact-field select, .contact-field textarea { display: block; width: 100%; min-height: 48px; padding: .625rem .75rem; border: 1px solid var(--line); border-radius: var(--radius-input); background: var(--canvas); color: var(--fg); font: inherit; font-size: 1rem; line-height: 1.5; }
+.contact-field input, .contact-field select, .contact-field textarea { display: block; width: 100%; min-height: 48px; padding: .625rem .75rem; border: 1px solid var(--field-border); border-radius: var(--radius-input); background: var(--canvas); color: var(--fg); font: inherit; font-size: 1rem; line-height: 1.5; }
 .contact-field select { padding-right: .5rem; }
 .contact-field textarea { min-height: 9rem; resize: vertical; }
 .contact-field textarea::placeholder { color: var(--fg-muted); opacity: 1; }
